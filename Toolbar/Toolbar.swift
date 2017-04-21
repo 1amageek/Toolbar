@@ -21,8 +21,10 @@ class Toolbar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(backgroundView)
         self.addSubview(stackView)
-        self.backgroundColor = .green
+        self.backgroundColor = .clear
+        self.isOpaque = false
         stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
         stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
@@ -35,7 +37,12 @@ class Toolbar: UIView {
     
     // MARK: - 
     
-    func setItems(_ items: [UIView], animated: Bool) {
+    func setItems(_ items: [ToolbarItem], animated: Bool) {
+        if items.flatMap({ return $0.spacing == ToolbarItem.Spacing.flexible}).first ?? false {
+            self.stackView.distribution = .fill
+        } else {
+            self.stackView.distribution = .fillProportionally
+        }
         self.stackView.arrangedSubviews.forEach { (view) in
             self.stackView.removeArrangedSubview(view)
         }
@@ -53,6 +60,13 @@ class Toolbar: UIView {
         view.distribution = .fillProportionally
         view.alignment = .bottom
         view.spacing = 0
+        return view
+    }()
+    
+    private(set) lazy var backgroundView: UIVisualEffectView = {
+        let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+        let view: UIVisualEffectView = UIVisualEffectView(effect: blurEffect)
+        view.frame = self.bounds
         return view
     }()
 

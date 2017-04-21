@@ -11,11 +11,10 @@ import UIKit
 public class ToolbarItem: UIView {
     
     public enum Spacing {
+        case none
         case flexible
         case fixed
     }
-    
-    public static let contentInset: UIEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
     
     public var title: String? {
         didSet {
@@ -37,16 +36,58 @@ public class ToolbarItem: UIView {
     
     private(set) var customView: UIView?
     
-    private(set) var spacing: Spacing?
+    private(set) var spacing: Spacing = .none
     
-    public var minimumHeight: CGFloat = 44 {
+    public override var isHidden: Bool {
         didSet {
+            self.titleLabel?.isHidden = isHidden
+            self.imageView?.isHidden = isHidden
+            self.minimumWidthConstraint?.isActive = !isHidden
+            self.minimumHeightConstraint?.isActive = !isHidden
+        }
+    }
+    
+    public var isHighlighted: Bool = false {
+        didSet {
+            self.setHighlighted(isHighlighted, animated: true)
+        }
+    }
+    
+    public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
+    public var minimumHeight: CGFloat {
+        return Toolbar.defaultHeight
+    }
+    
+    public var fixedWidth: CGFloat = 20
+    
+    public var minimumWidth: CGFloat {
+        if let label: UILabel = self.titleLabel {
+            let size: CGSize = label.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+            return self.contentInset.left + size.width + self.contentInset.right
+        }
+        
+        if let view: UIImageView = self.imageView {
+            let size: CGSize = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+            return self.contentInset.left + size.width + self.contentInset.right
+        }
+        return self.fixedWidth
+    }
+    
+    public var maximumHeight: CGFloat = UIScreen.main.bounds.height {
+        didSet {
+            if maximumHeight < minimumHeight {
+                debugPrint("[ToolbarItem] *** error: maximumHeight can not be smaller than minimumHeight")
+            }
             setNeedsUpdateConstraints()
         }
     }
     
-    public var minimumWidth: CGFloat = 44 {
+    public var maximumWidth: CGFloat = UIScreen.main.bounds.width {
         didSet {
+            if maximumWidth < minimumWidth {
+                debugPrint("[ToolbarItem] *** error: maximumWidth can not be smaller than minimumWidth")
+            }
             setNeedsUpdateConstraints()
         }
     }
@@ -68,22 +109,23 @@ public class ToolbarItem: UIView {
         
         self.title = title
         self.titleLabel = label
+        
         self.addSubview(label)
         self.addGestureRecognizer(tapGestureRecognizer)
     }
     
-    public convenience init(image: UIImage?, target: Any?, action: Selector?) {
+    public convenience init(image: UIImage, target: Any?, action: Selector?) {
         self.init(frame: .zero)
         self.target = target as AnyObject
         self.action = action
         
-        let view: UIImageView = UIImageView(image: image)
+        let view: UIImageView = UIImageView(image: image.withRenderingMode(.alwaysTemplate))
         view.contentMode = .scaleAspectFill
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.image = image
         
         self.image = image
         self.imageView = view
+        
         self.addSubview(view)
         self.addGestureRecognizer(tapGestureRecognizer)
     }
@@ -102,7 +144,8 @@ public class ToolbarItem: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .blue
+        self.backgroundColor = .clear
+        self.isOpaque = false
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -133,56 +176,65 @@ public class ToolbarItem: UIView {
             view.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor).isActive = true
         }
         
-        self.heightConstraint?.isActive = true
-        self.widthConstraint?.isActive = true
-        
+        self.minimumWidthConstraint?.isActive = true
+        self.minimumHeightConstraint?.isActive = true
+        self.maximumWidthConstraint?.isActive = true
+        self.maximumHeightConstraint?.isActive = true
         super.updateConstraints()
     }
+    
+    // MARK: -
+    
+    // override function
+    public func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // default function
+        if animated {
+            UIView.animate(withDuration: 0.2, animations: {
+                self.alpha = highlighted ? 0.5 : 1
+            })
+        } else {
+            self.alpha = highlighted ? 0.5 : 1
+        }
+    }
+    
+    // MARK: -
     
     private(set) lazy var tapGestureRecognizer: UITapGestureRecognizer = {
         let recognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self.target, action: self.action)
         return recognizer
     }()
     
-//    private(set) lazy var titleLabelCenterXConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.centerXAnchor.constraint(equalTo: self.centerXAnchor)
-//    }()
-//    
-//    private(set) lazy var titleLabelCenterYConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-//    }()
-//    
-//    private(set) lazy var titleLabelLeadingConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor)
-//    }()
-//    
-//    private(set) lazy var titleLabelTrailingConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
-//    }()
-//    
-//    private(set) lazy var titleLabelWidthConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.widthAnchor.constraint(equalToConstant: 0)
-//    }()
-//    
-//    private(set) lazy var titleLabelHeightConstraint: NSLayoutConstraint? = {
-//        return self.titleLabel?.heightAnchor.constraint(equalToConstant: 0)
-//    }()
-    
-    private(set) lazy var widthConstraint: NSLayoutConstraint? = {
+    private(set) lazy var minimumWidthConstraint: NSLayoutConstraint? = {
         return self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
     }()
     
-    private(set) lazy var heightConstraint: NSLayoutConstraint? = {
+    private(set) lazy var minimumHeightConstraint: NSLayoutConstraint? = {
         return self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
     }()
     
-    public override var isHidden: Bool {
-        willSet {
-            self.titleLabel?.isHidden = true
-            self.imageView?.isHidden = true
-            self.heightConstraint?.isActive = false
-            self.widthConstraint?.isActive = false
-        }
+    private(set) lazy var maximumWidthConstraint: NSLayoutConstraint? = {
+        return self.widthAnchor.constraint(lessThanOrEqualToConstant: self.maximumWidth)
+    }()
+    
+    private(set) lazy var maximumHeightConstraint: NSLayoutConstraint? = {
+        return self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
+    }()
+    
+    // MARK: - Touches
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        self.isHighlighted = true
+    }
+    
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        self.isHighlighted = false
+    }
+    
+    public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        self.isHighlighted = false
     }
     
 }

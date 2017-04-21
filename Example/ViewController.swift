@@ -12,21 +12,112 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(self.toolbar)
-        self.toolbar.frame = CGRect(x: 0, y: 100, width: self.toolbar.bounds.width, height: self.toolbar.bounds.height)
         
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 50, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(spacing: .flexible)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0, item1], animated: true)
+        }
         
-        let item0: ToolbarItem = ToolbarItem(title: "00000", target: self, action: #selector(hide0))
-        let item1: ToolbarItem = ToolbarItem(title: "1111111", target: self, action: #selector(hide1))
-        let item2: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
-        item2.minimumWidth = 100
-        let item3: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
-        self.item0 = item0
-        self.item1 = item1
-        self.item2 = item2
-        self.item3 = item3
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 100, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0], animated: true)
+        }
 
-        self.toolbar.setItems([item0, item1, item2, item3], animated: true)
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 150, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0, item1], animated: true)
+        }
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 200, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0, item1, item2], animated: true)
+        }
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 250, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item3: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0, item1, item2, item3], animated: true)
+        }
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 300, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item3: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item4: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            toolbar.setItems([item0, item1, item2, item3, item4], animated: true)
+        }
+        
+        
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 350, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide1))
+            let item2: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
+            let item3: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
+            self.item0 = item0
+            self.item1 = item1
+            self.item2 = item2
+            self.item3 = item3
+            toolbar.setItems([item0, item1, item2, item3], animated: true)
+        }
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 400, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide1))
+            let item2: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
+            let item3: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
+            self.item0 = item0
+            self.item1 = item1
+            self.item2 = item2
+            self.item3 = item3
+            toolbar.setItems([item0, item1, item2, item3], animated: true)
+        }
+        
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: 450, width: toolbar.bounds.width, height: toolbar.bounds.height)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide1))
+            let item2: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
+            let item3: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
+            self.item0 = item0
+            self.item1 = item1
+            self.item2 = item2
+            self.item3 = item3
+            toolbar.setItems([item0, item1, item2, item3], animated: true)
+        }
         
     }
     
@@ -61,7 +152,7 @@ class ViewController: UIViewController {
         }
     }
     
-    let toolbar: Toolbar = Toolbar()    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
