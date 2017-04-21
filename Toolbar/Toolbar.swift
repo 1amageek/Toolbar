@@ -36,9 +36,11 @@ class Toolbar: UIView {
     // MARK: - 
     
     func setItems(_ items: [UIView], animated: Bool) {
+        self.stackView.arrangedSubviews.forEach { (view) in
+            self.stackView.removeArrangedSubview(view)
+        }
         items.forEach { (view) in
             self.stackView.addArrangedSubview(view)
-            self.stackView.setNeedsLayout()
         }
     }
     

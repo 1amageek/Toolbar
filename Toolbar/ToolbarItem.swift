@@ -10,6 +10,11 @@ import UIKit
 
 public class ToolbarItem: UIView {
     
+    public enum Spacing {
+        case flexible
+        case fixed
+    }
+    
     public static let contentInset: UIEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
     
     public var title: String? {
@@ -30,9 +35,21 @@ public class ToolbarItem: UIView {
     
     private(set) var imageView: UIImageView?
     
-    public var minimumHeight: CGFloat = 44
+    private(set) var customView: UIView?
     
-    public var minimumWidth: CGFloat = 44
+    private(set) var spacing: Spacing?
+    
+    public var minimumHeight: CGFloat = 44 {
+        didSet {
+            setNeedsUpdateConstraints()
+        }
+    }
+    
+    public var minimumWidth: CGFloat = 44 {
+        didSet {
+            setNeedsUpdateConstraints()
+        }
+    }
     
     public weak var target: AnyObject?
     
@@ -60,7 +77,7 @@ public class ToolbarItem: UIView {
         self.target = target as AnyObject
         self.action = action
         
-        let view: UIImageView = UIImageView(frame: frame)
+        let view: UIImageView = UIImageView(image: image)
         view.contentMode = .scaleAspectFill
         view.translatesAutoresizingMaskIntoConstraints = false
         view.image = image
@@ -75,6 +92,12 @@ public class ToolbarItem: UIView {
         self.init(frame: .zero)
         self.addSubview(customView)
         customView.translatesAutoresizingMaskIntoConstraints = false
+        self.customView = customView
+    }
+    
+    public convenience init(spacing: Spacing) {
+        self.init(frame: .zero)
+        self.spacing = spacing
     }
     
     public override init(frame: CGRect) {
@@ -88,13 +111,31 @@ public class ToolbarItem: UIView {
     
     override public func updateConstraints() {
         
-        self.titleLabel?.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        self.titleLabel?.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        self.titleLabel?.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor).isActive = true
-        self.titleLabel?.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor).isActive = true
+        if let label: UILabel = self.titleLabel {
+            let size: CGSize = label.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+            label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            label.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+            label.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        }
         
-        self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight).isActive = true
-        self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth).isActive = true
+        if let view: UIImageView = self.imageView {
+            view.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            view.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            view.widthAnchor.constraint(equalToConstant: view.bounds.width).isActive = true
+            view.heightAnchor.constraint(equalToConstant: view.bounds.height).isActive = true
+        }
+        
+        if let view: UIView = self.customView {
+            view.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor).isActive = true
+            view.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor).isActive = true
+            view.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor).isActive = true
+            view.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor).isActive = true
+        }
+        
+        self.heightConstraint?.isActive = true
+        self.widthConstraint?.isActive = true
+        
         super.updateConstraints()
     }
     
@@ -102,15 +143,45 @@ public class ToolbarItem: UIView {
         let recognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self.target, action: self.action)
         return recognizer
     }()
-
+    
+//    private(set) lazy var titleLabelCenterXConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+//    }()
+//    
+//    private(set) lazy var titleLabelCenterYConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+//    }()
+//    
+//    private(set) lazy var titleLabelLeadingConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor)
+//    }()
+//    
+//    private(set) lazy var titleLabelTrailingConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
+//    }()
+//    
+//    private(set) lazy var titleLabelWidthConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.widthAnchor.constraint(equalToConstant: 0)
+//    }()
+//    
+//    private(set) lazy var titleLabelHeightConstraint: NSLayoutConstraint? = {
+//        return self.titleLabel?.heightAnchor.constraint(equalToConstant: 0)
+//    }()
+    
+    private(set) lazy var widthConstraint: NSLayoutConstraint? = {
+        return self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
+    }()
+    
+    private(set) lazy var heightConstraint: NSLayoutConstraint? = {
+        return self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
+    }()
+    
     public override var isHidden: Bool {
         willSet {
-            self.constraints.forEach { (constraint) in
-                constraint.isActive = !newValue
-            }
-            self.titleLabel?.constraints.forEach({ (constraint) in
-                constraint.isActive = !newValue
-            })
+            self.titleLabel?.isHidden = true
+            self.imageView?.isHidden = true
+            self.heightConstraint?.isActive = false
+            self.widthConstraint?.isActive = false
         }
     }
     
