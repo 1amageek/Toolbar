@@ -12,31 +12,24 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="299"/>
+            <rect key="frame" x="0.0" y="0.0" width="1005" height="299"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="center" semanticContentAttribute="playback" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="g3B-On-gRM">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="299"/>
+                <stackView opaque="NO" contentMode="center" semanticContentAttribute="playback" distribution="fillProportionally" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="g3B-On-gRM">
+                    <rect key="frame" x="0.0" y="0.0" width="1005" height="299"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1W-qW-mI3">
-                            <rect key="frame" x="0.0" y="278.5" width="42" height="20.5"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="vRo-HT-TlK">
-                            <rect key="frame" x="42" y="171" width="291" height="128"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                        </textView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rdn-jl-EOS">
-                            <rect key="frame" x="333" y="278.5" width="42" height="20.5"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oC3-8V-YKS">
+                            <rect key="frame" x="0.0" y="269" width="46" height="30"/>
+                            <state key="normal" title="Button"/>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QWM-BA-SRh">
+                            <rect key="frame" x="56" y="171" width="442.5" height="128"/>
+                            <color key="backgroundColor" red="1" green="0.27366586511755908" blue="0.87869106416443676" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </view>
+                        <view contentMode="scaleToFill" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="REp-lO-aLZ">
+                            <rect key="frame" x="508.5" y="171" width="496.5" height="128"/>
+                            <color key="backgroundColor" red="0.52077317097240705" green="0.59955903575825786" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </view>
                     </subviews>
                 </stackView>
             </subviews>
@@ -51,42 +44,7 @@
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="33.5" y="-129.5"/>
-        </view>
-        <view contentMode="scaleToFill" id="9cq-Wf-g15">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="275"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="gci-sO-Yzv">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="275"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DYM-KK-w9n">
-                            <rect key="frame" x="0.0" y="0.0" width="46" height="275"/>
-                            <state key="normal" title="Button"/>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EeO-vV-ouX">
-                            <rect key="frame" x="164.5" y="0.0" width="46" height="275"/>
-                            <state key="normal" title="Button"/>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tp2-H1-9vu">
-                            <rect key="frame" x="329" y="0.0" width="46" height="275"/>
-                            <state key="normal" title="Button"/>
-                        </button>
-                    </subviews>
-                </stackView>
-            </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <constraints>
-                <constraint firstAttribute="bottom" secondItem="gci-sO-Yzv" secondAttribute="bottom" id="NEr-Jh-s6F"/>
-                <constraint firstItem="gci-sO-Yzv" firstAttribute="top" secondItem="9cq-Wf-g15" secondAttribute="top" id="eUK-GW-apW"/>
-                <constraint firstAttribute="trailing" secondItem="gci-sO-Yzv" secondAttribute="trailing" id="hYV-od-yc4"/>
-                <constraint firstItem="gci-sO-Yzv" firstAttribute="leading" secondItem="9cq-Wf-g15" secondAttribute="leading" id="hqs-Hb-IWy"/>
-            </constraints>
-            <nil key="simulatedStatusBarMetrics"/>
-            <nil key="simulatedTopBarMetrics"/>
-            <nil key="simulatedBottomBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-534.5" y="-580.5"/>
+            <point key="canvasLocation" x="83.5" y="-115.5"/>
         </view>
     </objects>
 </document>

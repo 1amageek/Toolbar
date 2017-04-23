@@ -38,11 +38,11 @@ class Toolbar: UIView {
     // MARK: - 
     
     func setItems(_ items: [ToolbarItem], animated: Bool) {
-        if items.flatMap({ return $0.spacing == ToolbarItem.Spacing.flexible}).first ?? false {
-            self.stackView.distribution = .fill
-        } else {
-            self.stackView.distribution = .fillProportionally
-        }
+//        if items.flatMap({ return $0.spacing == ToolbarItem.Spacing.flexible}).first ?? false {
+//            self.stackView.distribution = .fill
+//        } else {
+//            self.stackView.distribution = .fillProportionally
+//        }
         self.stackView.arrangedSubviews.forEach { (view) in
             self.stackView.removeArrangedSubview(view)
         }
