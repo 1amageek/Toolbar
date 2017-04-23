@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +20,7 @@ class ViewController: UIViewController {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
-            let item0: ToolbarItem = ToolbarItem(title: "Flexible Space right", target: nil, action: nil)
+            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(spacing: .flexible)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
             self.view.addSubview(toolbar)
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
             let item0: ToolbarItem = ToolbarItem(spacing: .flexible)
-            let item1: ToolbarItem = ToolbarItem(title: "Flexible Space left", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
@@ -151,7 +151,11 @@ class ViewController: UIViewController {
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide1))
-            let item2: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
+            let view: UITextView = UITextView(frame: .zero)
+            view.delegate = self
+//            view.isScrollEnabled = false
+            view.font = UIFont.systemFont(ofSize: 10)
+            let item2: ToolbarItem = ToolbarItem(customView: view)
             let item3: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
             self.item0 = item0
             self.item1 = item1
@@ -186,18 +190,13 @@ class ViewController: UIViewController {
     var toolbar: Toolbar?
     
     func hide0() {
-        UIView.animate(withDuration: 0.33) {
-            self.item0?.isHidden = true
-            self.item1?.setNeedsUpdateConstraints()
-            self.toolbar?.layoutIfNeeded()
-            self.toolbar?.setNeedsUpdateConstraints()
-            self.toolbar?.updateConstraintsIfNeeded()
-        }
+        self.item0?.setHidden(true, animated: true)
     }
     
     func hide1() {
+        self.item0?.setHidden(false, animated: true)
         UIView.animate(withDuration: 0.33) {
-            self.item0?.isHidden = false
+            
 //            self.toolbar?.setNeedsUpdateConstraints()
 //            self.toolbar?.updateConstraintsIfNeeded()
             self.toolbar?.layoutIfNeeded()
@@ -216,6 +215,9 @@ class ViewController: UIViewController {
         }
     }
     
+    func textViewDidChange(_ textView: UITextView) {
+        
+    }
 
 }
 

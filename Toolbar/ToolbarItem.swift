@@ -34,14 +34,6 @@ public class ToolbarItem: UIView {
         }
     }
     
-    private(set) var titleLabel: UILabel?
-    
-    private(set) var imageView: UIImageView?
-    
-    private(set) var customView: UIView?
-    
-    private(set) var spacing: Spacing = .none
-    
     public override var isHidden: Bool {
         didSet {
             self.titleLabel?.isHidden = isHidden
@@ -59,7 +51,10 @@ public class ToolbarItem: UIView {
     public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
     /// Fixed Space width
-    public var width: CGFloat = 1 // Fixed Space Default 1
+    public var width: CGFloat = 1 // Default 1
+    
+    /// Custom height
+    public var height: CGFloat = 1
     
     /// The minimum height of the item
     public var minimumHeight: CGFloat {
@@ -111,6 +106,40 @@ public class ToolbarItem: UIView {
     /// Tap event action
     public var action: Selector?
     
+    // Private
+    
+    private(set) var titleLabel: UILabel?
+    
+    private(set) var imageView: UIImageView?
+    
+    private(set) var customView: UIView?
+    
+    private(set) var spacing: Spacing = .none
+    
+    private var minimumWidthConstraint: NSLayoutConstraint?
+    
+    private var maximumWidthConstraint: NSLayoutConstraint?
+    
+    private var minimumHeightConstraint: NSLayoutConstraint?
+    
+    private var maximumHeightConstraint: NSLayoutConstraint?
+    
+    private var titleLabelCenterXConstraint: NSLayoutConstraint?
+    
+    private var titleLabelCenterYConstraint: NSLayoutConstraint?
+    
+    private var imageViewCenterXConstraint: NSLayoutConstraint?
+    
+    private var imageViewCenterYConstraint: NSLayoutConstraint?
+    
+    private var customViewLeadingConstraint: NSLayoutConstraint?
+    
+    private var customViewTrailingConstraint: NSLayoutConstraint?
+    
+    private var customViewTopConstraint: NSLayoutConstraint?
+    
+    private var customViewBottomConstraint: NSLayoutConstraint?
+    
     // MARK: - init
     
     public convenience init(title: String?, target: Any?, action: Selector?) {
@@ -127,11 +156,8 @@ public class ToolbarItem: UIView {
         self.title = title
         self.titleLabel = label
         
-        self.setContentHuggingPriority(UILayoutPriorityRequired - 0.1, for: .horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityRequired - 0.1, for: .vertical)
-        
-        self.setContentCompressionResistancePriority(UILayoutPriorityFittingSizeLevel, for: .horizontal)
-        self.setContentCompressionResistancePriority(UILayoutPriorityFittingSizeLevel, for: .vertical)
+        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
+        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
 
         self.addSubview(label)
         self.addGestureRecognizer(tapGestureRecognizer)
@@ -191,14 +217,12 @@ public class ToolbarItem: UIView {
        
         if let label: UILabel = self.titleLabel {
             let size: CGSize = label.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
-            return CGSize(width: self.contentInset.left + size.width + self.contentInset.right
-, height: size.height)
+            return CGSize(width: self.contentInset.left + size.width + self.contentInset.right, height: size.height)
         }
         
         if let view: UIImageView = self.imageView {
             let size: CGSize = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
-            return CGSize(width: self.contentInset.left + size.width + self.contentInset.right
-                , height: size.height)
+            return CGSize(width: self.contentInset.left + size.width + self.contentInset.right, height: size.height)
         }
         
         switch self.spacing {
@@ -255,20 +279,43 @@ public class ToolbarItem: UIView {
             self.customViewBottomConstraint?.isActive = true
         }
         
-        switch self.spacing {
-        case .flexible:
-            self.minimumWidthConstraint?.priority = UILayoutPriorityRequired - 0.5
-            self.maximumWidthConstraint?.priority = UILayoutPriorityRequired - 0.5
-            self.minimumWidthConstraint?.isActive = true
-            self.maximumWidthConstraint?.isActive = true
-        default: break
-        }
         self.minimumHeightConstraint?.isActive = true
         self.maximumHeightConstraint?.isActive = true
         super.updateConstraints()
     }
     
     // MARK: -
+    
+    public func setHidden(_ hidden: Bool, animated: Bool) {
+        if self.isHidden == hidden {
+            return
+        }
+        
+        self.layer.removeAllAnimations()
+        
+        if animated {
+            if hidden {
+                UIView.animate(withDuration: 0.1, animations: {
+                    self.alpha = 0
+                }, completion: { (finished) in
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.isHidden = hidden
+                    }, completion: { (finished) in
+                        self.alpha = 1
+                    })
+                })
+            } else {
+                self.alpha = 0                
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.isHidden = hidden
+                    self.alpha = 1
+                })
+            }
+        } else {
+            self.alpha = 1
+            self.isHidden = hidden
+        }
+    }
     
     // override function
     public func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -288,21 +335,6 @@ public class ToolbarItem: UIView {
         let recognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self.target, action: self.action)
         return recognizer
     }()
-    
-    var minimumWidthConstraint: NSLayoutConstraint?
-    var maximumWidthConstraint: NSLayoutConstraint?
-    var minimumHeightConstraint: NSLayoutConstraint?
-    var maximumHeightConstraint: NSLayoutConstraint?
-    
-    var titleLabelCenterXConstraint: NSLayoutConstraint?
-    var titleLabelCenterYConstraint: NSLayoutConstraint?
-    var imageViewCenterXConstraint: NSLayoutConstraint?
-    var imageViewCenterYConstraint: NSLayoutConstraint?
-    
-    var customViewLeadingConstraint: NSLayoutConstraint?
-    var customViewTrailingConstraint: NSLayoutConstraint?
-    var customViewTopConstraint: NSLayoutConstraint?
-    var customViewBottomConstraint: NSLayoutConstraint?
     
     // MARK: - Touches
     

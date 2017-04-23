@@ -35,19 +35,6 @@ class Toolbar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateConstraints() {
-        
-        print("bar")
-//        self.stackView.constraints.forEach { (constraint) in
-//            if let identifier: String = constraint.identifier, identifier == "UISV-fill-proportionally" {
-//                print(constraint)
-//                print(constraint.priority)
-//                constraint.isActive = false
-//            }
-//        }
-        super.updateConstraints()
-    }
-    
     // MARK: - 
     
     func setItems(_ items: [ToolbarItem], animated: Bool) {
