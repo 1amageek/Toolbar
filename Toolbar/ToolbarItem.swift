@@ -82,8 +82,6 @@ public class ToolbarItem: UIView {
         return self.width
     }
     
-//    public var minimumWidth: CGFloat = 44
-    
     /// The maximum height of the item
     public var maximumHeight: CGFloat = UIScreen.main.bounds.height {
         didSet {
@@ -156,16 +154,7 @@ public class ToolbarItem: UIView {
         self.init(frame: .zero)
         self.addSubview(customView)
         customView.translatesAutoresizingMaskIntoConstraints = false
-//        customView.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .horizontal)
-//        customView.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
-//        customView.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, for: .horizontal)
-//        customView.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, for: .vertical)
-        
         self.customView = customView
-//        self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .horizontal)
-//        self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
-//        self.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, for: .horizontal)
-//        self.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, for: .vertical)
     }
     
     public convenience init(spacing: Spacing) {
@@ -202,7 +191,7 @@ public class ToolbarItem: UIView {
         }
         
         switch self.spacing {
-//        case .flexible: return UILayoutFittingExpandedSize
+        case .flexible: return CGSize(width: 1, height: 1)
 //        case .fixed: return UILayoutFittingCompressedSize
         default: return super.intrinsicContentSize
         }
@@ -250,11 +239,11 @@ public class ToolbarItem: UIView {
         
         switch self.spacing {
         case .flexible:
-            self.minimumWidthConstraint?.priority = UILayoutPriorityRequired
+            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
             self.minimumWidthConstraint?.isActive = true
             self.maximumWidthConstraint?.isActive = true
         case .fixed:
-            self.minimumWidthConstraint?.priority = UILayoutPriorityRequired
+            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
             self.minimumWidthConstraint?.isActive = true
             self.maximumWidthConstraint?.isActive = true
         default: break
