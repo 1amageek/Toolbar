@@ -16,6 +16,10 @@ public class ToolbarItem: UIView {
         case fixed
     }
     
+    public override class var requiresConstraintBasedLayout: Bool {
+        return true
+    }
+    
     public var title: String? {
         didSet {
             self.titleLabel?.text = title
@@ -42,8 +46,6 @@ public class ToolbarItem: UIView {
         didSet {
             self.titleLabel?.isHidden = isHidden
             self.imageView?.isHidden = isHidden
-            self.minimumWidthConstraint?.isActive = !isHidden
-            self.minimumHeightConstraint?.isActive = !isHidden
         }
     }
     
@@ -56,7 +58,8 @@ public class ToolbarItem: UIView {
     /// Content inset
     public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
-    public var width: CGFloat = 0
+    /// Fixed Space width
+    public var width: CGFloat = 1 // Fixed Space Default 1
     
     /// The minimum height of the item
     public var minimumHeight: CGFloat {
@@ -107,7 +110,7 @@ public class ToolbarItem: UIView {
     
     /// Tap event action
     public var action: Selector?
-
+    
     // MARK: - init
     
     public convenience init(title: String?, target: Any?, action: Selector?) {
@@ -124,8 +127,11 @@ public class ToolbarItem: UIView {
         self.title = title
         self.titleLabel = label
         
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
+        self.setContentHuggingPriority(UILayoutPriorityRequired - 0.1, for: .horizontal)
+        self.setContentHuggingPriority(UILayoutPriorityRequired - 0.1, for: .vertical)
+        
+        self.setContentCompressionResistancePriority(UILayoutPriorityFittingSizeLevel, for: .horizontal)
+        self.setContentCompressionResistancePriority(UILayoutPriorityFittingSizeLevel, for: .vertical)
 
         self.addSubview(label)
         self.addGestureRecognizer(tapGestureRecognizer)
@@ -160,6 +166,15 @@ public class ToolbarItem: UIView {
     public convenience init(spacing: Spacing) {
         self.init(frame: .zero)
         self.spacing = spacing
+        switch spacing {
+        case .flexible:
+            self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .horizontal)
+            self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+        case .fixed:
+            self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
+            self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
+        default: break
+        }
     }
     
     public override init(frame: CGRect) {
@@ -186,71 +201,68 @@ public class ToolbarItem: UIView {
                 , height: size.height)
         }
         
-        if let view: UIView = self.customView {
-//            return view.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
-        }
-        
         switch self.spacing {
         case .flexible: return CGSize(width: 1, height: 1)
-//        case .fixed: return UILayoutFittingCompressedSize
+        case .fixed: return CGSize(width: self.width, height: 1)
         default: return super.intrinsicContentSize
         }
     }
     
     override public func updateConstraints() {
         
-        self.minimumWidthConstraint?.isActive = false
-        self.maximumWidthConstraint?.isActive = false
-        self.minimumHeightConstraint?.isActive = false
-        self.maximumHeightConstraint?.isActive = false
+        // deactive
+        self.removeConstraints([self.minimumWidthConstraint,
+                                self.maximumWidthConstraint,
+                                self.minimumHeightConstraint,
+                                self.maximumHeightConstraint,
+                                self.titleLabelCenterXConstraint,
+                                self.titleLabelCenterYConstraint,
+                                self.imageViewCenterXConstraint,
+                                self.imageViewCenterYConstraint,
+                                self.customViewLeadingConstraint,
+                                self.customViewTrailingConstraint,
+                                self.customViewTopConstraint,
+                                self.customViewBottomConstraint
+                                ].flatMap({ return $0 }))
         
         self.minimumWidthConstraint = self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
         self.maximumWidthConstraint = self.widthAnchor.constraint(lessThanOrEqualToConstant: self.maximumWidth)
         self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
         self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
-        
+    
         if let label: UILabel = self.titleLabel {
-            label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-//            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
-//            self.minimumWidthConstraint?.isActive = true
-//            self.maximumWidthConstraint?.isActive = true
+            self.titleLabelCenterXConstraint = label.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            self.titleLabelCenterYConstraint = label.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            self.titleLabelCenterXConstraint?.isActive = true
+            self.titleLabelCenterYConstraint?.isActive = true
         }
         
         if let view: UIImageView = self.imageView {
-            view.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            view.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-//            view.widthAnchor.constraint(equalToConstant: view.bounds.width).isActive = true
-//            view.heightAnchor.constraint(equalToConstant: view.bounds.height).isActive = true
-//            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
-//            self.minimumWidthConstraint?.isActive = true
-//            self.maximumWidthConstraint?.isActive = true
+            self.imageViewCenterXConstraint = view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            self.imageViewCenterYConstraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            self.imageViewCenterXConstraint?.isActive = true
+            self.imageViewCenterYConstraint?.isActive = true
         }
         
         if let view: UIView = self.customView {
-            view.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor).isActive = true
-            view.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor).isActive = true
-            view.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor).isActive = true
-            view.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor).isActive = true
-//            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
-//            self.minimumWidthConstraint?.isActive = true
-//            self.maximumWidthConstraint?.isActive = true
+            self.customViewLeadingConstraint = view.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor)
+            self.customViewTrailingConstraint = view.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
+            self.customViewTopConstraint = view.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor)
+            self.customViewBottomConstraint = view.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor)
+            self.customViewLeadingConstraint?.isActive = true
+            self.customViewTrailingConstraint?.isActive = true
+            self.customViewTopConstraint?.isActive = true
+            self.customViewBottomConstraint?.isActive = true
         }
         
         switch self.spacing {
         case .flexible:
-            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
-            self.minimumWidthConstraint?.isActive = true
-            self.maximumWidthConstraint?.isActive = true
-        case .fixed:
-            self.minimumWidthConstraint?.priority = UILayoutPriorityDefaultLow
+            self.minimumWidthConstraint?.priority = UILayoutPriorityRequired - 0.5
+            self.maximumWidthConstraint?.priority = UILayoutPriorityRequired - 0.5
             self.minimumWidthConstraint?.isActive = true
             self.maximumWidthConstraint?.isActive = true
         default: break
         }
-        
-//        self.minimumWidthConstraint?.isActive = true
-//        self.maximumWidthConstraint?.isActive = true
         self.minimumHeightConstraint?.isActive = true
         self.maximumHeightConstraint?.isActive = true
         super.updateConstraints()
@@ -277,61 +289,42 @@ public class ToolbarItem: UIView {
         return recognizer
     }()
     
-//    private(set) lazy var minimumWidthConstraint: NSLayoutConstraint? = {
-//        return self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
-//    }()
-//    
-//    private(set) lazy var minimumHeightConstraint: NSLayoutConstraint? = {
-//        return self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
-//    }()
-//    
-//    private(set) lazy var maximumWidthConstraint: NSLayoutConstraint? = {
-//        return self.widthAnchor.constraint(lessThanOrEqualToConstant: self.maximumWidth)
-//    }()
-//    
-//    private(set) lazy var maximumHeightConstraint: NSLayoutConstraint? = {
-//        return self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
-//    }()
-    
-//    var minimumWidthConstraint: NSLayoutConstraint? {
-//        return self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
-//    }
-//    
-//    var minimumHeightConstraint: NSLayoutConstraint? {
-//        return self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
-//    }
-//    
-//    var maximumWidthConstraint: NSLayoutConstraint? {
-//        return self.widthAnchor.constraint(lessThanOrEqualToConstant: self.maximumWidth)
-//    }
-//    
-//    var maximumHeightConstraint: NSLayoutConstraint? {
-//        return self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
-//    }
-
     var minimumWidthConstraint: NSLayoutConstraint?
-    
-    var minimumHeightConstraint: NSLayoutConstraint?
-    
     var maximumWidthConstraint: NSLayoutConstraint?
-    
+    var minimumHeightConstraint: NSLayoutConstraint?
     var maximumHeightConstraint: NSLayoutConstraint?
+    
+    var titleLabelCenterXConstraint: NSLayoutConstraint?
+    var titleLabelCenterYConstraint: NSLayoutConstraint?
+    var imageViewCenterXConstraint: NSLayoutConstraint?
+    var imageViewCenterYConstraint: NSLayoutConstraint?
+    
+    var customViewLeadingConstraint: NSLayoutConstraint?
+    var customViewTrailingConstraint: NSLayoutConstraint?
+    var customViewTopConstraint: NSLayoutConstraint?
+    var customViewBottomConstraint: NSLayoutConstraint?
     
     // MARK: - Touches
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        self.isHighlighted = true
+        if self.customView == nil {
+            self.isHighlighted = true
+        }
     }
     
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        self.isHighlighted = false
+        if self.customView == nil {
+            self.isHighlighted = false
+        }
     }
     
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        self.isHighlighted = false
+        if self.customView == nil {
+            self.isHighlighted = false
+        }
     }
     
 }

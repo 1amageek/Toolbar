@@ -20,7 +20,7 @@ class ViewController: UIViewController {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
-            let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item0: ToolbarItem = ToolbarItem(title: "Flexible Space right", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(spacing: .flexible)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
             self.view.addSubview(toolbar)
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
             let item0: ToolbarItem = ToolbarItem(spacing: .flexible)
-            let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
+            let item1: ToolbarItem = ToolbarItem(title: "Flexible Space left", target: nil, action: nil)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
@@ -138,8 +138,10 @@ class ViewController: UIViewController {
             self.view.addSubview(toolbar)
             toolbar.frame = CGRect(x: 0, y: y, width: toolbar.bounds.width, height: toolbar.bounds.height)
             let item0: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
-            let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
-            toolbar.setItems([item0, item1], animated: true)
+            let item1: ToolbarItem = ToolbarItem(spacing: .fixed)
+            item1.width = 30
+            let item2: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
+            toolbar.setItems([item0, item1, item2], animated: true)
             y += 50
         }
         
@@ -186,6 +188,8 @@ class ViewController: UIViewController {
     func hide0() {
         UIView.animate(withDuration: 0.33) {
             self.item0?.isHidden = true
+            self.item1?.setNeedsUpdateConstraints()
+            self.toolbar?.layoutIfNeeded()
             self.toolbar?.setNeedsUpdateConstraints()
             self.toolbar?.updateConstraintsIfNeeded()
         }
@@ -193,9 +197,10 @@ class ViewController: UIViewController {
     
     func hide1() {
         UIView.animate(withDuration: 0.33) {
-            self.item1?.isHidden = true
-            self.toolbar?.setNeedsUpdateConstraints()
-            self.toolbar?.updateConstraintsIfNeeded()
+            self.item0?.isHidden = false
+//            self.toolbar?.setNeedsUpdateConstraints()
+//            self.toolbar?.updateConstraintsIfNeeded()
+            self.toolbar?.layoutIfNeeded()
         }
     }
     
