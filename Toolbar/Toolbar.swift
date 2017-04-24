@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Toolbar: UIView {
+public class Toolbar: UIView {
     
     public enum LayoutMode {
         case auto
@@ -19,7 +19,7 @@ class Toolbar: UIView {
         return true
     }
     
-    static let defaultHeight: CGFloat = 44
+    public static let defaultHeight: CGFloat = 44
     
     /** 
      Toolbar layout mode
@@ -53,7 +53,7 @@ class Toolbar: UIView {
     // manual mode layout frame.origin.y
     private var topConstraint: NSLayoutConstraint?
     
-    override var frame: CGRect {
+    public override var frame: CGRect {
         didSet {
             if frame != .zero {
                 self.layoutMode = .munual
@@ -68,11 +68,11 @@ class Toolbar: UIView {
     /**
      Initialize in autolayout mode.
     */
-    convenience init() {
+    public convenience init() {
         self.init(frame: .zero)
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         
         if frame != .zero {
@@ -95,11 +95,11 @@ class Toolbar: UIView {
         stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateConstraints() {
+    public override func updateConstraints() {
         
         self.removeConstraints([self.minimumHeightConstraint,
                                 self.maximumHeightConstraint,
@@ -137,7 +137,7 @@ class Toolbar: UIView {
     
     // MARK: - 
     
-    func setItems(_ items: [ToolbarItem], animated: Bool) {
+    public func setItems(_ items: [ToolbarItem], animated: Bool) {
         self.stackView.arrangedSubviews.forEach { (view) in
             self.stackView.removeArrangedSubview(view)
         }

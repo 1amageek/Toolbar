@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Toolbar
 
 class ChatViewController: UIViewController, UITextViewDelegate {
 
@@ -48,7 +49,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         view.font = UIFont.systemFont(ofSize: 14)
         self.textView = view
         self.item0 = ToolbarItem(customView: view)
-        self.item1 = ToolbarItem(title: "Button", target: self, action: #selector(send))
+        self.item1 = ToolbarItem(title: "Send", target: self, action: #selector(send))
         self.toolbar.setItems([self.camera, self.picture, self.microphone, self.item0!, self.item1!], animated: false)
         
         
@@ -75,8 +76,6 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-    private var keyboardHeight: CGFloat = 0
-    
     final func keyboardWillShow(notification: Notification) {
         moveToolbar(up: true, notification: notification)
     }
@@ -90,10 +89,10 @@ class ChatViewController: UIViewController, UITextViewDelegate {
             return
         }
         let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        self.keyboardHeight = up ? (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : 0
+        let keyboardHeight = up ? -(userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : 0
         
         // Animation
-        self.toolbarBottomConstraint?.constant = -self.keyboardHeight
+        self.toolbarBottomConstraint?.constant = keyboardHeight
         UIView.animate(withDuration: animationDuration) {
             self.view.layoutIfNeeded()
         }
