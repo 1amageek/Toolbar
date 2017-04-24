@@ -5,6 +5,10 @@
 This toolbar is made with Autolayout.
 It works more interactively than UIToolbar.
 
+<img src="https://github.com/1amageek/Toolbar/blob/master/Toolbar.gif" width="320px">
+
+ _Slow Animations Debug mode_
+
 ## Installation
 
 __[CocoaPods](https://github.com/cocoapods/cocoapods)__
