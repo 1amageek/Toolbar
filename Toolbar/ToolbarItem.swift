@@ -48,7 +48,7 @@ public class ToolbarItem: UIView {
     }
     
     /// Content inset
-    public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
     
     /// Fixed Space width
     public var width: CGFloat = 1 // Default 1
