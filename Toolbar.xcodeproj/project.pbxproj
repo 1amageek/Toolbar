@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12558FB51EAD942F00911E5D /* ToolbarItemCustomViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12558FB41EAD942F00911E5D /* ToolbarItemCustomViewProtocol.swift */; };
+		12558FB71EADBFC700911E5D /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12558FB61EADBFC700911E5D /* ChatViewController.swift */; };
 		12FB3D1E1EA8530100C47131 /* Toolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 12FB3D1C1EA8530100C47131 /* Toolbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12FB3D251EA8531000C47131 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FB3D241EA8531000C47131 /* Toolbar.swift */; };
 		12FB3D271EA8536900C47131 /* ToolbarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FB3D261EA8536900C47131 /* ToolbarItem.swift */; };
@@ -21,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		12558FB41EAD942F00911E5D /* ToolbarItemCustomViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemCustomViewProtocol.swift; sourceTree = "<group>"; };
+		12558FB61EADBFC700911E5D /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		12FB3D191EA8530100C47131 /* Toolbar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Toolbar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12FB3D1C1EA8530100C47131 /* Toolbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Toolbar.h; sourceTree = "<group>"; };
 		12FB3D1D1EA8530100C47131 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -78,6 +82,7 @@
 				12FB3D1C1EA8530100C47131 /* Toolbar.h */,
 				12FB3D241EA8531000C47131 /* Toolbar.swift */,
 				12FB3D261EA8536900C47131 /* ToolbarItem.swift */,
+				12558FB41EAD942F00911E5D /* ToolbarItemCustomViewProtocol.swift */,
 				12FB3D281EA866D400C47131 /* View.xib */,
 				12FB3D1D1EA8530100C47131 /* Info.plist */,
 			);
@@ -89,6 +94,7 @@
 			children = (
 				12FB3D301EA8697C00C47131 /* AppDelegate.swift */,
 				12FB3D321EA8697C00C47131 /* ViewController.swift */,
+				12558FB61EADBFC700911E5D /* ChatViewController.swift */,
 				12FB3D341EA8697C00C47131 /* Main.storyboard */,
 				12FB3D371EA8697C00C47131 /* Assets.xcassets */,
 				12FB3D391EA8697C00C47131 /* LaunchScreen.storyboard */,
@@ -216,6 +222,7 @@
 			files = (
 				12FB3D271EA8536900C47131 /* ToolbarItem.swift in Sources */,
 				12FB3D251EA8531000C47131 /* Toolbar.swift in Sources */,
+				12558FB51EAD942F00911E5D /* ToolbarItemCustomViewProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +233,7 @@
 				12FB3D401EA8699900C47131 /* Toolbar.swift in Sources */,
 				12FB3D331EA8697C00C47131 /* ViewController.swift in Sources */,
 				12FB3D411EA8699900C47131 /* ToolbarItem.swift in Sources */,
+				12558FB71EADBFC700911E5D /* ChatViewController.swift in Sources */,
 				12FB3D311EA8697C00C47131 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,6 +447,7 @@
 				12FB3D231EA8530100C47131 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		12FB3D3D1EA8697C00C47131 /* Build configuration list for PBXNativeTarget "Example" */ = {
 			isa = XCConfigurationList;
@@ -447,6 +456,7 @@
 				12FB3D3F1EA8697C00C47131 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
