@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Toolbar
+//import Toolbar
 
 class ChatViewController: UIViewController, UITextViewDelegate {
 
@@ -32,6 +32,11 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         return item
     }()
     
+    lazy var menu: ToolbarItem = {
+        let item: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "Add"), target: self, action: #selector(toggleMenu))
+        return item
+    }()
+    
     var toolbarBottomConstraint: NSLayoutConstraint?
     
     override func loadView() {
@@ -50,7 +55,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         self.textView = view
         self.item0 = ToolbarItem(customView: view)
         self.item1 = ToolbarItem(title: "Send", target: self, action: #selector(send))
-        self.toolbar.setItems([self.camera, self.picture, self.microphone, self.item0!, self.item1!], animated: false)
+        self.toolbar.setItems([self.menu, self.camera, self.picture, self.microphone, self.item0!, self.item1!], animated: false)
         
         
         let gestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hide))
@@ -58,11 +63,27 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         
     }
     
+    var isMenuHidden: Bool = false {
+        didSet {
+            if oldValue == isMenuHidden {
+                return
+            }
+            self.toolbar.layoutIfNeeded()
+            self.camera.setHidden(isMenuHidden, animated: true)
+            self.microphone.setHidden(isMenuHidden, animated: true)
+            self.picture.setHidden(isMenuHidden, animated: true)
+            UIView.animate(withDuration: 0.3) {
+                self.toolbar.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func toggleMenu() {
+        self.isMenuHidden = !self.isMenuHidden
+    }
+    
     func hide() {
         self.textView?.resignFirstResponder()
-        self.camera.setHidden(false, animated: true)
-        self.microphone.setHidden(false, animated: true)
-        self.picture.setHidden(false, animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -93,9 +114,10 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         
         // Animation
         self.toolbarBottomConstraint?.constant = keyboardHeight
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
+        UIView.animate(withDuration: animationDuration, animations: { 
+            self.toolbar.layoutIfNeeded()
+        }, completion: nil)
+        self.isMenuHidden = up
     }
     
     func send() {
@@ -107,9 +129,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        self.camera.setHidden(true, animated: true)
-        self.microphone.setHidden(true, animated: true)
-        self.picture.setHidden(true, animated: true)
+        self.isMenuHidden = true
     }
 
     func textViewDidChange(_ textView: UITextView) {
@@ -124,4 +144,9 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     
     var constraint: NSLayoutConstraint?
     
+    // MARK: -
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.toolbar.setNeedsUpdateConstraints()
+    }
 }

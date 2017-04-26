@@ -36,8 +36,7 @@ public class ToolbarItem: UIView {
     
     public override var isHidden: Bool {
         didSet {
-            self.titleLabel?.isHidden = isHidden
-            self.imageView?.isHidden = isHidden
+            self.setNeedsUpdateConstraints()
         }
     }
     

@@ -128,12 +128,9 @@ public class Toolbar: UIView {
             self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
             self.leadingConstraint?.isActive = true
             self.trailingConstraint?.isActive = true
-        }
-        
-        
+        }                
         super.updateConstraints()
     }
-    
     
     // MARK: - 
     
