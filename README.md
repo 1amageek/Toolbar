@@ -2,6 +2,9 @@
 
 <img src="https://github.com/1amageek/Toolbar/blob/master/Toolbar.png" width="640px">
 
+ [![Version](http://img.shields.io/cocoapods/v/Toolbar.svg)](http://cocoapods.org/?q=Toolbar)
+ [![Platform](http://img.shields.io/cocoapods/p/Toolbar.svg)]()
+
 This toolbar is made with Autolayout.
 It works more interactively than UIToolbar.
 
@@ -13,10 +16,18 @@ It works more interactively than UIToolbar.
 
 __[CocoaPods](https://github.com/cocoapods/cocoapods)__
 
-- Inset `pod 'Toolbar'` to youre Podfile.
+- Inset `pod 'Toolbar'` to your Podfile.
 - Run `pod install`
 
 ## Usage
+
+Height and Width of the Toolbar are determined automatically.
+Do not set frame.
+
+Initialization.
+```
+let toolbar: Toolbar = Toolbar()
+```
 
 ``` swift
 
@@ -52,7 +63,6 @@ override func viewDidLoad() {
     self.toolbar.setItems([self.camera, self.picture, self.microphone], animated: false)
 }
 
-
 ```
 
 ### Hide items
@@ -65,6 +75,9 @@ func hideItems() {
 ```
 
 ### Stretchable TextView
+
+You can control the height by setting `maximumHeight`.
+
 ``` Swift
 // ViewController
 

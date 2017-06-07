@@ -17,8 +17,8 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/1amageek/Toolbar"
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author             = { "1amageek" => "tmy0x3@icloud.com" }
-  s.platform     = :ios, "10.0"
-  s.ios.deployment_target = "10.0"
+  s.platform     = :ios, "9.0"
+  s.ios.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/1amageek/Toolbar.git", :tag => "#{s.version}" }
   s.source_files  = "Classes", "Toolbar/**/*.{swift}"
 
