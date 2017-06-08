@@ -115,7 +115,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         // Animation
         self.toolbarBottomConstraint?.constant = keyboardHeight
         UIView.animate(withDuration: animationDuration, animations: { 
-            self.toolbar.layoutIfNeeded()
+            self.view.layoutIfNeeded()
         }, completion: nil)
         self.isMenuHidden = up
     }
