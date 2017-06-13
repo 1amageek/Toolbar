@@ -33,10 +33,23 @@ public class ToolbarItem: UIView {
             self.imageView?.setNeedsDisplay()
         }
     }
-    
+
     public override var isHidden: Bool {
         didSet {
             self.setNeedsUpdateConstraints()
+        }
+    }
+
+    public var isSelected: Bool = false {
+        didSet {
+            self.setSelected(isSelected, animated: true)
+        }
+    }
+
+    public var isEnabled: Bool = true {
+        didSet {
+            self.tapGestureRecognizer.isEnabled = isEnabled
+            self.setEnabled(isEnabled, animated: true)
         }
     }
     
@@ -315,10 +328,38 @@ public class ToolbarItem: UIView {
             self.isHidden = hidden
         }
     }
-    
-    // override function
+
+    public func setSelected(_ isSelected: Bool, animated: Bool) {
+        guard self.isEnabled else {
+            return
+        }
+    }
+
+    public func setEnabled(_ isEnabled: Bool, animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: 0.2, animations: {
+                if let label: UILabel = self.titleLabel {
+                    label.textColor = isEnabled ? self.tintColor : UIColor.lightGray
+                }
+                if let view: UIImageView = self.imageView {
+                    view.tintColor = isEnabled ? self.tintColor : UIColor.lightGray
+                }
+            })
+        } else {
+            if let label: UILabel = self.titleLabel {
+                label.textColor = isEnabled ? self.tintColor : UIColor.lightGray
+            }
+            if let view: UIImageView = self.imageView {
+                view.tintColor = isEnabled ? self.tintColor : UIColor.lightGray
+            }
+        }
+    }
+
     public func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        // default function
+        guard self.isEnabled else {
+            return
+        }
+
         if animated {
             UIView.animate(withDuration: 0.2, animations: {
                 self.alpha = highlighted ? 0.5 : 1
@@ -327,7 +368,7 @@ public class ToolbarItem: UIView {
             self.alpha = highlighted ? 0.5 : 1
         }
     }
-    
+
     // MARK: -
     
     private(set) lazy var tapGestureRecognizer: UITapGestureRecognizer = {

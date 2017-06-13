@@ -60,7 +60,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         
         let gestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hide))
         self.view.addGestureRecognizer(gestureRecognizer)
-        
+        self.item1?.isEnabled = false
     }
     
     var isMenuHidden: Bool = false {
@@ -133,6 +133,9 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
+
+        self.item1?.isEnabled = !textView.text.isEmpty
+
         let size: CGSize = textView.sizeThatFits(textView.bounds.size)
         if let constraint: NSLayoutConstraint = self.constraint {
             textView.removeConstraint(constraint)
