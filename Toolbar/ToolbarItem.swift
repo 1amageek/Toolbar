@@ -168,8 +168,8 @@ public class ToolbarItem: UIView {
         self.title = title
         self.titleLabel = label
         
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
+        self.setContentHuggingPriority(UILayoutPriority.required, for: .horizontal)
+        self.setContentHuggingPriority(UILayoutPriority.required, for: .vertical)
 
         self.addSubview(label)
         self.addGestureRecognizer(tapGestureRecognizer)
@@ -187,8 +187,8 @@ public class ToolbarItem: UIView {
         self.image = image
         self.imageView = view
         
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
-        self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
+        self.setContentHuggingPriority(UILayoutPriority.required, for: .horizontal)
+        self.setContentHuggingPriority(UILayoutPriority.required, for: .vertical)
         
         self.addSubview(view)
         self.addGestureRecognizer(tapGestureRecognizer)
@@ -206,11 +206,11 @@ public class ToolbarItem: UIView {
         self.spacing = spacing
         switch spacing {
         case .flexible:
-            self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .horizontal)
-            self.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+            self.setContentHuggingPriority(UILayoutPriority.defaultLow, for: .horizontal)
+            self.setContentHuggingPriority(UILayoutPriority.defaultLow, for: .vertical)
         case .fixed:
-            self.setContentHuggingPriority(UILayoutPriorityRequired, for: .horizontal)
-            self.setContentHuggingPriority(UILayoutPriorityRequired, for: .vertical)
+            self.setContentHuggingPriority(UILayoutPriority.required, for: .horizontal)
+            self.setContentHuggingPriority(UILayoutPriority.required, for: .vertical)
         default: break
         }
     }

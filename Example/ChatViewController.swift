@@ -78,11 +78,11 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         }
     }
     
-    func toggleMenu() {
+    @objc func toggleMenu() {
         self.isMenuHidden = !self.isMenuHidden
     }
     
-    func hide() {
+    @objc func hide() {
         self.textView?.resignFirstResponder()
     }
     
@@ -97,11 +97,11 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-    final func keyboardWillShow(notification: Notification) {
+    @objc final func keyboardWillShow(notification: Notification) {
         moveToolbar(up: true, notification: notification)
     }
     
-    final func keyboardWillHide(notification: Notification) {
+    @objc final func keyboardWillHide(notification: Notification) {
         moveToolbar(up: false, notification: notification)
     }
     
@@ -120,7 +120,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         self.isMenuHidden = up
     }
     
-    func send() {
+    @objc func send() {
         self.textView?.text = nil
         if let constraint: NSLayoutConstraint = self.constraint {
             self.textView?.removeConstraint(constraint)
@@ -141,7 +141,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
             textView.removeConstraint(constraint)
         }
         self.constraint = textView.heightAnchor.constraint(equalToConstant: size.height)
-        self.constraint?.priority = UILayoutPriorityDefaultHigh
+        self.constraint?.priority = UILayoutPriority.defaultHigh
         self.constraint?.isActive = true
     }
     

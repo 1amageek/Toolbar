@@ -172,21 +172,21 @@ class ViewController: UIViewController, UITextViewDelegate {
     var item3: ToolbarItem?
     var toolbar: Toolbar?
     
-    func hide0() {
+    @objc func hide0() {
         self.item0?.setHidden(true, animated: true)
     }
     
-    func hide1() {
+    @objc func hide1() {
         self.item0?.setHidden(false, animated: true)
     }
     
-    func hide2() {
+    @objc func hide2() {
         UIView.animate(withDuration: 0.33) {
             self.item2?.isHidden = true
         }
     }
     
-    func hide3() {
+    @objc func hide3() {
         UIView.animate(withDuration: 0.33) {
             self.item3?.isHidden = true
         }
@@ -199,7 +199,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             textView.removeConstraint(constraint)
         }
         self.constraint = textView.heightAnchor.constraint(equalToConstant: size.height)
-        self.constraint?.priority = UILayoutPriorityDefaultHigh
+        self.constraint?.priority = UILayoutPriority.defaultHigh
         self.constraint?.isActive = true
         self.toolbar?.layoutIfNeeded()
     }
