@@ -283,8 +283,8 @@ public class ToolbarItem: UIView {
         if let view: UIView = self.customView {
             self.customViewLeadingConstraint = view.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor)
             self.customViewTrailingConstraint = view.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
-            self.customViewTopConstraint = view.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor)
-            self.customViewBottomConstraint = view.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor)
+            self.customViewTopConstraint = view.topAnchor.constraint(equalTo: self.topAnchor, constant: 8)
+            self.customViewBottomConstraint = view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
             self.customViewLeadingConstraint?.isActive = true
             self.customViewTrailingConstraint?.isActive = true
             self.customViewTopConstraint?.isActive = true

@@ -36,13 +36,19 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         let item: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "Add"), target: self, action: #selector(toggleMenu))
         return item
     }()
-    
+
     var toolbarBottomConstraint: NSLayoutConstraint?
+
+    let bottomInset: CGFloat = 12
     
     override func loadView() {
         super.loadView()
         self.view.addSubview(toolbar)
-        self.toolbarBottomConstraint = self.toolbar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
+        if #available(iOS 11.0, *) {
+            self.toolbarBottomConstraint = self.view.bottomAnchor.constraint(equalTo: self.toolbar.bottomAnchor, constant: bottomInset)
+        } else {
+            // Fallback on earlier versions
+        }
         self.toolbarBottomConstraint?.isActive = true
     }
     
@@ -89,7 +95,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -104,13 +110,14 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     @objc final func keyboardWillHide(notification: Notification) {
         moveToolbar(up: false, notification: notification)
     }
-    
+
     final func moveToolbar(up: Bool, notification: Notification) {
         guard let userInfo = notification.userInfo else {
             return
         }
+        self.view.layoutIfNeeded()
         let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        let keyboardHeight = up ? -(userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : 0
+        let keyboardHeight = up ? (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : bottomInset
         
         // Animation
         self.toolbarBottomConstraint?.constant = keyboardHeight
