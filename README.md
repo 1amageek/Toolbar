@@ -4,6 +4,7 @@
 
  [![Version](http://img.shields.io/cocoapods/v/Toolbar.svg)](http://cocoapods.org/?q=Toolbar)
  [![Platform](http://img.shields.io/cocoapods/p/Toolbar.svg)]()
+ [![Downloads](https://img.shields.io/cocoapods/dt/Toolbar.svg?label=Total%20Downloads&colorB=28B9FE)]()
 
 This toolbar is made with Autolayout.
 It works more interactively than UIToolbar.
