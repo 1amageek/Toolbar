@@ -292,11 +292,6 @@ public class ToolbarItem: UIView {
             self.customViewTopConstraint?.isActive = true
             self.customViewBottomConstraint?.isActive = true
         }
-
-        if let view: UITextView = self.customView as? UITextView {
-//            self.customViewMinimumHeightConstraint = view.heightAnchor.constraint(greaterThanOrEqualToConstant: 30)
-//            self.customViewMinimumHeightConstraint?.isActive = true
-        }
         
         self.minimumHeightConstraint?.isActive = true
         self.maximumHeightConstraint?.isActive = true
