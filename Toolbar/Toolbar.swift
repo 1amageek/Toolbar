@@ -91,8 +91,8 @@ public class Toolbar: UIView {
         backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
         stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
         stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
-        stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+        stackView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor).isActive = true
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -100,7 +100,7 @@ public class Toolbar: UIView {
     }
     
     public override func updateConstraints() {
-        
+
         self.removeConstraints([self.minimumHeightConstraint,
                                 self.maximumHeightConstraint,
                                 self.leadingConstraint,

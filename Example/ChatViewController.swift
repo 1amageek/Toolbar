@@ -38,14 +38,12 @@ class ChatViewController: UIViewController, UITextViewDelegate {
     }()
 
     var toolbarBottomConstraint: NSLayoutConstraint?
-
-    let bottomInset: CGFloat = 12
     
     override func loadView() {
         super.loadView()
         self.view.addSubview(toolbar)
         if #available(iOS 11.0, *) {
-            self.toolbarBottomConstraint = self.view.bottomAnchor.constraint(equalTo: self.toolbar.bottomAnchor, constant: bottomInset)
+            self.toolbarBottomConstraint = self.view.bottomAnchor.constraint(equalTo: self.toolbar.bottomAnchor, constant: 0)
         } else {
             // Fallback on earlier versions
         }
@@ -117,7 +115,7 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         }
         self.view.layoutIfNeeded()
         let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        let keyboardHeight = up ? (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : bottomInset
+        let keyboardHeight = up ? (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height : 0
         
         // Animation
         self.toolbarBottomConstraint?.constant = keyboardHeight

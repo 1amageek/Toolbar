@@ -60,7 +60,7 @@ public class ToolbarItem: UIView {
     }
     
     /// Content inset
-    public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+    public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
     
     /// Fixed Space width
     public var width: CGFloat = 1 // Default 1
@@ -70,7 +70,7 @@ public class ToolbarItem: UIView {
     
     /// The minimum height of the item
     public var minimumHeight: CGFloat {
-        return Toolbar.defaultHeight
+        return Toolbar.defaultHeight - 12
     }
     
     /// The minimum width of the item
@@ -151,6 +151,8 @@ public class ToolbarItem: UIView {
     private var customViewTopConstraint: NSLayoutConstraint?
     
     private var customViewBottomConstraint: NSLayoutConstraint?
+
+    private var customViewMinimumHeightConstraint: NSLayoutConstraint?
     
     // MARK: - init
     
@@ -283,12 +285,17 @@ public class ToolbarItem: UIView {
         if let view: UIView = self.customView {
             self.customViewLeadingConstraint = view.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor)
             self.customViewTrailingConstraint = view.trailingAnchor.constraint(equalTo: self.layoutMarginsGuide.trailingAnchor)
-            self.customViewTopConstraint = view.topAnchor.constraint(equalTo: self.topAnchor, constant: 8)
-            self.customViewBottomConstraint = view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
+            self.customViewTopConstraint = view.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
+            self.customViewBottomConstraint = view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
             self.customViewLeadingConstraint?.isActive = true
             self.customViewTrailingConstraint?.isActive = true
             self.customViewTopConstraint?.isActive = true
             self.customViewBottomConstraint?.isActive = true
+        }
+
+        if let view: UITextView = self.customView as? UITextView {
+//            self.customViewMinimumHeightConstraint = view.heightAnchor.constraint(greaterThanOrEqualToConstant: 30)
+//            self.customViewMinimumHeightConstraint?.isActive = true
         }
         
         self.minimumHeightConstraint?.isActive = true
