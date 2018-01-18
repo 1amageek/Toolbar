@@ -35,8 +35,11 @@ public class ToolbarItem: UIView {
     }
 
     public override var isHidden: Bool {
+        willSet {
+            self._setHidden(newValue, animated: false)
+        }
         didSet {
-            self.setNeedsUpdateConstraints()
+            self.setNeedsLayout()
         }
     }
 
@@ -58,6 +61,9 @@ public class ToolbarItem: UIView {
             self.setHighlighted(isHighlighted, animated: true)
         }
     }
+
+    /// Animation Duration
+    public var animationDuration: TimeInterval = 0.3
     
     /// Content inset
     public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
@@ -299,36 +305,24 @@ public class ToolbarItem: UIView {
     }
     
     // MARK: -
-    
-    public func setHidden(_ hidden: Bool, animated: Bool) {
-        if self.isHidden == hidden {
+
+    private func _setHidden(_ hidden: Bool, animated: Bool) {
+        if hidden == self.isHidden {
             return
         }
-        
         self.layer.removeAllAnimations()
-        
+        let alpha: CGFloat = hidden ? 0 : 1
         if animated {
-            if hidden {
-                UIView.animate(withDuration: 0.1, animations: {
-                    self.alpha = 0
-                }, completion: { (finished) in
-                    UIView.animate(withDuration: 0.2, animations: {
-                        self.isHidden = hidden
-                    }, completion: { (finished) in
-                        self.alpha = 1
-                    })
-                })
-            } else {
-                self.alpha = 0                
-                UIView.animate(withDuration: 0.2, animations: {
-                    self.isHidden = hidden
-                    self.alpha = 1
-                })
-            }
-        } else {
-            self.alpha = 1
-            self.isHidden = hidden
+            UIView.animate(withDuration: self.animationDuration, animations: {
+                self.alpha = alpha
+                self.isHidden = hidden
+            })
         }
+        self.alpha = alpha
+    }
+    
+    public func setHidden(_ hidden: Bool, animated: Bool) {
+        _setHidden(hidden, animated: animated)
     }
 
     public func setSelected(_ isSelected: Bool, animated: Bool) {
@@ -339,6 +333,7 @@ public class ToolbarItem: UIView {
 
     public func setEnabled(_ isEnabled: Bool, animated: Bool) {
         if animated {
+            self.layoutIfNeeded()
             UIView.animate(withDuration: 0.2, animations: {
                 if let label: UILabel = self.titleLabel {
                     label.textColor = isEnabled ? self.tintColor : UIColor.lightGray

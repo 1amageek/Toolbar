@@ -73,10 +73,13 @@ class ChatViewController: UIViewController, UITextViewDelegate {
                 return
             }
             self.toolbar.layoutIfNeeded()
-            self.camera.setHidden(isMenuHidden, animated: true)
-            self.microphone.setHidden(isMenuHidden, animated: true)
-            self.picture.setHidden(isMenuHidden, animated: true)
+//            self.camera.setHidden(isMenuHidden, animated: true)
+//            self.microphone.setHidden(isMenuHidden, animated: true)
+//            self.picture.setHidden(isMenuHidden, animated: true)
             UIView.animate(withDuration: 0.3) {
+                self.camera.isHidden = self.isMenuHidden
+                self.microphone.isHidden = self.isMenuHidden
+                self.picture.isHidden = self.isMenuHidden
                 self.toolbar.layoutIfNeeded()
             }
         }
