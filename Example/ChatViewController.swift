@@ -65,6 +65,28 @@ class ChatViewController: UIViewController, UITextViewDelegate {
         let gestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hide))
         self.view.addGestureRecognizer(gestureRecognizer)
         self.item1?.isEnabled = false
+
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "SafeArea", style: .plain, target: self, action: #selector(setSafeArea))
+    }
+
+    var bottomSafeArea: CGFloat = 0 {
+        didSet {
+            if #available(iOS 11.0, *) {
+                self.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: self.bottomSafeArea, right: 0)
+            } else {
+                // Fallback on earlier versions
+            }
+            self.view.setNeedsLayout()
+        }
+    }
+
+    @objc func setSafeArea() {
+        if #available(iOS 11.0, *) {
+            print(self.additionalSafeAreaInsets)
+            self.bottomSafeArea = self.additionalSafeAreaInsets.bottom == 0 ? 100 : 0
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     var isMenuHidden: Bool = false {
