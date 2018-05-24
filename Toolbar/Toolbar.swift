@@ -20,6 +20,17 @@ public class Toolbar: UIView {
     }
     
     public static let defaultHeight: CGFloat = 44
+
+    public var axis: UILayoutConstraintAxis = .horizontal {
+        didSet {
+            stackView.axis = axis
+            switch axis {
+            case .horizontal: layoutHorizontal()
+            case .vertical: layoutVertical()
+            }
+            setNeedsLayout()
+        }
+    }
     
     /** 
      Toolbar layout mode
@@ -52,6 +63,8 @@ public class Toolbar: UIView {
     
     // manual mode layout frame.origin.y
     private var topConstraint: NSLayoutConstraint?
+
+    private var bottomConstraint: NSLayoutConstraint?
     
     public override var frame: CGRect {
         didSet {
@@ -106,29 +119,50 @@ public class Toolbar: UIView {
                                 self.leadingConstraint,
                                 self.trailingConstraint,
                                 self.topConstraint,
+                                self.bottomConstraint,
                                 self.widthConstraint
-            ].flatMap({ return $0 }))
-        
-        self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
-        self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
+            ].compactMap({ return $0 }))
 
-        self.minimumHeightConstraint?.isActive = true
-        self.maximumHeightConstraint?.isActive = true
+        switch axis {
+        case .horizontal:
+            self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
+            self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
+
+            self.minimumHeightConstraint?.isActive = true
+            self.maximumHeightConstraint?.isActive = true
+
+            switch self.layoutMode {
+            case .munual:
+                self.topConstraint = self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: frame.origin.y)
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: frame.origin.x)
+                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.size.width)
+                self.topConstraint?.isActive = true
+                self.leadingConstraint?.isActive = true
+                self.widthConstraint?.isActive = true
+            case .auto:
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+                self.leadingConstraint?.isActive = true
+                self.trailingConstraint?.isActive = true
+            }
+        case .vertical:
+            switch self.layoutMode {
+            case .munual:
+                self.topConstraint = self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: frame.origin.y)
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: frame.origin.x)
+                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.size.width)
+                self.topConstraint?.isActive = true
+                self.leadingConstraint?.isActive = true
+                self.widthConstraint?.isActive = true
+            case .auto:
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+                self.leadingConstraint?.isActive = true
+                self.trailingConstraint?.isActive = true
+            }
+        }
         
-        switch self.layoutMode {
-        case .munual:
-            self.topConstraint = self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: frame.origin.y)
-            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: frame.origin.x)
-            self.widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.size.width)
-            self.topConstraint?.isActive = true
-            self.leadingConstraint?.isActive = true
-            self.widthConstraint?.isActive = true
-        case .auto:
-            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
-            self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
-            self.leadingConstraint?.isActive = true
-            self.trailingConstraint?.isActive = true
-        }                
+
         super.updateConstraints()
     }
     
@@ -145,7 +179,21 @@ public class Toolbar: UIView {
     }
     
     // MARK: -
-    
+
+    private func layoutHorizontal() {
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .bottom
+        stackView.spacing = 0
+    }
+
+    private func layoutVertical() {
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
+        stackView.spacing = 0
+    }
+
     private(set) lazy var stackView: UIStackView = {
         let view: UIStackView = UIStackView(frame: self.bounds)
         view.axis = .horizontal

@@ -163,6 +163,27 @@ class ViewController: UIViewController, UITextViewDelegate {
             self.toolbar = toolbar
             y += 50
         }
+
+        do {
+            let toolbar: Toolbar = Toolbar()
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            let item0: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
+            let item1: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
+            toolbar.setItems([item0, item1], animated: true)
+            y += 50
+        }
+
+        do {
+            let toolbar: Toolbar = Toolbar()
+            toolbar.axis = .vertical
+            self.view.addSubview(toolbar)
+            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            let item0: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
+            let item1: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
+            toolbar.setItems([item0, item1], animated: true)
+            y += 50
+        }
         
     }
     
