@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Toolbar"
-  s.version      = "0.1"
+  s.version      = "0.2.0"
   s.summary      = "Awesome autolayout Toolbar"
   s.description  = <<-DESC
   This toolbar is made with Autolayout.
