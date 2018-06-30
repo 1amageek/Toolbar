@@ -3,8 +3,8 @@
 <img src="https://github.com/1amageek/Toolbar/blob/master/Toolbar.png" width="640px">
 
  [![Version](http://img.shields.io/cocoapods/v/Toolbar.svg)](http://cocoapods.org/?q=Toolbar)
- [![Platform](http://img.shields.io/cocoapods/p/Toolbar.svg)]()
- [![Downloads](https://img.shields.io/cocoapods/dt/Toolbar.svg?label=Total%20Downloads&colorB=28B9FE)]()
+ [![Platform](http://img.shields.io/cocoapods/p/Toolbar.svg)](http://cocoapods.org/?q=Toolbar)
+ [![Downloads](https://img.shields.io/cocoapods/dt/Toolbar.svg?label=Total%20Downloads&colorB=28B9FE)](https://cocoapods.org/pods/Toolbar)
 
 This toolbar is made with Autolayout.
 It works more interactively than UIToolbar.
