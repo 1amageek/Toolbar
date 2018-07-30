@@ -48,7 +48,7 @@ class InputViewController: UIViewController, UITextViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.toolbar.maximumHeight = 100
+        self.toolbar.maximumHeight = 200
         let view: UITextView = UITextView(frame: .zero)
         view.delegate = self
         view.font = UIFont.systemFont(ofSize: 14)
