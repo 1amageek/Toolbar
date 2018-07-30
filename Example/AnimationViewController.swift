@@ -27,7 +27,12 @@ class AnimationViewController: UIViewController {
 
         let toolbar: Toolbar = Toolbar()
         self.view.addSubview(toolbar)
-        toolbar.frame = CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+        if #available(iOS 11.0, *) {
+            toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+        } else {
+            toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: 100).isActive = true
+        }
         self.item0 = ToolbarItem(title: "Button", target: nil, action: nil)
         self.item1 = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: nil, action: nil)
         toolbar.setItems([self.item0!, self.item1!], animated: false)

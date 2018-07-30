@@ -43,6 +43,8 @@ public class Toolbar: UIView {
     public var maximumHeight: CGFloat = UIScreen.main.bounds.height
     
     public var minimumHeight: CGFloat = Toolbar.defaultHeight
+
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     
     private(set) var items: [ToolbarItem] = []
     
@@ -65,6 +67,8 @@ public class Toolbar: UIView {
     private var topConstraint: NSLayoutConstraint?
 
     private var bottomConstraint: NSLayoutConstraint?
+
+    private var cachedIntrinsicContentSize: CGSize = CGSize(width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
     
     public override var frame: CGRect {
         didSet {
@@ -90,30 +94,37 @@ public class Toolbar: UIView {
         
         if frame != .zero {
             self.layoutMode = .munual
+            self.cachedIntrinsicContentSize = frame.size
         }
         
-        self.addSubview(backgroundView)
-        self.addSubview(stackView)
+        self.addSubview(self.backgroundView)
+        self.addSubview(self.stackView)
         self.backgroundColor = .clear
         self.isOpaque = false
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
-        backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
-        backgroundView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
-        backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
-        stackView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor).isActive = true
+        self.backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
+        self.backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
+        self.backgroundView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
+        self.backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+        self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.padding.left).isActive = true
+        self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: self.padding.right).isActive = true
+        self.stackView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor, constant: self.padding.top).isActive = true
+        self.stackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -self.padding.bottom).isActive = true
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public override func updateConstraints() {
 
+    public override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        if self.superview != nil {
+            self.setConstraints()
+        }
+    }
+
+    private func setConstraints() {
         self.removeConstraints([self.minimumHeightConstraint,
                                 self.maximumHeightConstraint,
                                 self.leadingConstraint,
@@ -161,11 +172,12 @@ public class Toolbar: UIView {
                 self.trailingConstraint?.isActive = true
             }
         }
-        
-
-        super.updateConstraints()
     }
-    
+
+    public override var intrinsicContentSize: CGSize {
+        return self.cachedIntrinsicContentSize
+    }
+
     // MARK: - 
     
     public func setItems(_ items: [ToolbarItem], animated: Bool) {
@@ -211,5 +223,4 @@ public class Toolbar: UIView {
         view.frame = self.bounds
         return view
     }()
-
 }

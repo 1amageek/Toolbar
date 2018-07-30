@@ -14,13 +14,17 @@ class ViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var y: CGFloat = 20
+        var y: CGFloat = 0
         
         do {
-            // FIXME: Spacing bug
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(spacing: .flexible)
             toolbar.setItems([item0, item1], animated: true)
@@ -28,20 +32,29 @@ class ViewController: UIViewController, UITextViewDelegate {
         }
         
         do {
-            // FIXME: Spacing bug
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(spacing: .flexible)
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             toolbar.setItems([item0], animated: true)
             y += 50
@@ -50,28 +63,43 @@ class ViewController: UIViewController, UITextViewDelegate {
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             toolbar.setItems([item0, item1, item2], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
@@ -79,11 +107,16 @@ class ViewController: UIViewController, UITextViewDelegate {
             toolbar.setItems([item0, item1, item2, item3], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
             let item2: ToolbarItem = ToolbarItem(title: "Button", target: nil, action: nil)
@@ -92,50 +125,75 @@ class ViewController: UIViewController, UITextViewDelegate {
             toolbar.setItems([item0, item1, item2, item3, item4], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: nil, action: nil)
             toolbar.setItems([item0], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: nil, action: nil)
             let item1: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: nil, action: nil)
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
             let item1: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: self, action: #selector(hide3))
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
             let item1: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(customView: UITextView(frame: .zero))
             let item1: ToolbarItem = ToolbarItem(spacing: .fixed)
             item1.width = 30
@@ -143,12 +201,17 @@ class ViewController: UIViewController, UITextViewDelegate {
             toolbar.setItems([item0, item1, item2], animated: true)
             y += 50
         }
- 
+
         do {
             let toolbar: Toolbar = Toolbar()
             toolbar.maximumHeight = 100
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide0))
             let item1: ToolbarItem = ToolbarItem(title: "Button", target: self, action: #selector(hide1))
             let view: UITextView = UITextView(frame: .zero)
@@ -167,7 +230,12 @@ class ViewController: UIViewController, UITextViewDelegate {
         do {
             let toolbar: Toolbar = Toolbar()
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
             let item1: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
             toolbar.setItems([item0, item1], animated: true)
@@ -178,13 +246,18 @@ class ViewController: UIViewController, UITextViewDelegate {
             let toolbar: Toolbar = Toolbar()
             toolbar.axis = .vertical
             self.view.addSubview(toolbar)
-            toolbar.frame = CGRect(x: 0, y: y, width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
+            if #available(iOS 11.0, *) {
+                toolbar.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                toolbar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: y).isActive = true
+            } else {
+                toolbar.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: y).isActive = true
+            }
             let item0: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
             let item1: ToolbarItem = ToolbarItem(customView: UISearchBar(frame: .zero))
             toolbar.setItems([item0, item1], animated: true)
             y += 50
         }
-        
+
     }
     
     var item0: ToolbarItem?

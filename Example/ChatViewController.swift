@@ -82,7 +82,6 @@ class ChatViewController: UIViewController, UITextViewDelegate {
 
     @objc func setSafeArea() {
         if #available(iOS 11.0, *) {
-            print(self.additionalSafeAreaInsets)
             self.bottomSafeArea = self.additionalSafeAreaInsets.bottom == 0 ? 100 : 0
         } else {
             // Fallback on earlier versions
