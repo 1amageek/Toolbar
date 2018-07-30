@@ -267,7 +267,7 @@ public class ToolbarItem: UIView {
                                 self.customViewTrailingConstraint,
                                 self.customViewTopConstraint,
                                 self.customViewBottomConstraint
-                                ].flatMap({ return $0 }))
+            ].compactMap({ return $0 }))
         
         self.minimumWidthConstraint = self.widthAnchor.constraint(greaterThanOrEqualToConstant: self.minimumWidth)
         self.maximumWidthConstraint = self.widthAnchor.constraint(lessThanOrEqualToConstant: self.maximumWidth)
