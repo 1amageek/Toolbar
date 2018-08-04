@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -56,13 +57,54 @@
                     <view key="view" contentMode="scaleToFill" id="Nes-CL-7V2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cwb-Xo-ERd">
+                                <rect key="frame" x="82" y="344" width="240" height="128"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="cwb-Xo-ERd" secondAttribute="trailing" constant="37" id="3dr-xk-FwU"/>
+                            <constraint firstItem="cwb-Xo-ERd" firstAttribute="top" secondItem="o3L-2R-cw7" secondAttribute="bottom" constant="324" id="5Uj-Ff-WYG"/>
+                            <constraint firstItem="NM9-ep-jXF" firstAttribute="top" secondItem="cwb-Xo-ERd" secondAttribute="bottom" constant="195" id="7WG-Lj-kOp"/>
+                            <constraint firstItem="cwb-Xo-ERd" firstAttribute="leading" secondItem="Nes-CL-7V2" secondAttribute="leadingMargin" constant="66" id="Fsx-Tq-zFf"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="qEB-8g-uey"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VDO-wp-P5y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="932" y="761"/>
+        </scene>
+        <!--Input View Controller-->
+        <scene sceneID="jaX-e2-hxZ">
+            <objects>
+                <tableViewController id="yu2-UR-k1W" customClass="InputViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="acd-df-sRI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="PSg-9o-7t5">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="PSg-9o-7t5" id="R1M-rH-VJg">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="yu2-UR-k1W" id="iL0-DR-TtD"/>
+                            <outlet property="delegate" destination="yu2-UR-k1W" id="wcf-4U-mMr"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="EdF-bb-eEc"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="czj-tA-qmd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-580" y="761"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="jze-k8-j4M">
@@ -130,7 +172,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="lTj-U2-JEp" kind="push" id="zbM-LB-m0f"/>
+                                            <segue destination="yu2-UR-k1W" kind="push" id="FYF-0a-6w1"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="YP5-ge-bQK" style="IBUITableViewCellStyleDefault" id="Ifs-qC-GuL">

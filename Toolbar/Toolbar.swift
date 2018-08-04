@@ -9,12 +9,7 @@
 import UIKit
 
 public class Toolbar: UIView {
-    
-    public enum LayoutMode {
-        case auto
-        case munual
-    }
-    
+
     public override class var requiresConstraintBasedLayout: Bool {
         return true
     }
@@ -32,19 +27,12 @@ public class Toolbar: UIView {
         }
     }
     
-    /** 
-     Toolbar layout mode
-     When frame is set, it becomes manual mode
-     Setting .zero in frame sets it to auto mode
-    */
-    private(set) var layoutMode: LayoutMode = .auto
-    
     /// Maximum value of high value of toolbar
     public var maximumHeight: CGFloat = UIScreen.main.bounds.height
     
     public var minimumHeight: CGFloat = Toolbar.defaultHeight
 
-    public var padding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
     
     private(set) var items: [ToolbarItem] = []
     
@@ -70,16 +58,6 @@ public class Toolbar: UIView {
 
     private var cachedIntrinsicContentSize: CGSize = CGSize(width: UIScreen.main.bounds.width, height: Toolbar.defaultHeight)
     
-    public override var frame: CGRect {
-        didSet {
-            if frame != .zero {
-                self.layoutMode = .munual
-            }
-            self.setNeedsLayout()
-        }
-    }
-    
-    
     // MARK: - Init
     
     /**
@@ -91,26 +69,32 @@ public class Toolbar: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        if frame != .zero {
-            self.layoutMode = .munual
-            self.cachedIntrinsicContentSize = frame.size
-        }
-        
+
         self.addSubview(self.backgroundView)
         self.addSubview(self.stackView)
         self.backgroundColor = .clear
         self.isOpaque = false
         self.translatesAutoresizingMaskIntoConstraints = false
-        
+
         self.backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
         self.backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
         self.backgroundView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
         self.backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
         self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.padding.left).isActive = true
         self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: self.padding.right).isActive = true
-        self.stackView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor, constant: self.padding.top).isActive = true
-        self.stackView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -self.padding.bottom).isActive = true
+
+        if #available(iOS 11.0, *) {
+            self.stackView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: self.padding.top).isActive = true
+            self.stackView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -self.padding.bottom).isActive = true
+            let stackViewBottomConstraint: NSLayoutConstraint = self.stackView.bottomAnchor.constraint(greaterThanOrEqualTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -self.padding.bottom)
+            stackViewBottomConstraint.priority = UILayoutPriority(rawValue: 250)
+            stackViewBottomConstraint.isActive = true
+        } else {
+            self.stackView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor, constant: self.padding.top).isActive = true
+            let stackViewBottomConstraint: NSLayoutConstraint = self.stackView.bottomAnchor.constraint(greaterThanOrEqualTo: self.layoutMarginsGuide.bottomAnchor, constant: -self.padding.bottom)
+            stackViewBottomConstraint.priority = UILayoutPriority(rawValue: 250)
+            stackViewBottomConstraint.isActive = true
+        }
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -138,38 +122,28 @@ public class Toolbar: UIView {
         case .horizontal:
             self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
             self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
-
             self.minimumHeightConstraint?.isActive = true
             self.maximumHeightConstraint?.isActive = true
-
-            switch self.layoutMode {
-            case .munual:
-                self.topConstraint = self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: frame.origin.y)
-                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: frame.origin.x)
-                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.size.width)
-                self.topConstraint?.isActive = true
-                self.leadingConstraint?.isActive = true
-                self.widthConstraint?.isActive = true
-            case .auto:
-                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
-                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
-                self.leadingConstraint?.isActive = true
-                self.trailingConstraint?.isActive = true
-            }
+            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+            self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+            self.leadingConstraint?.isActive = true
+            self.trailingConstraint?.isActive = true
         case .vertical:
-            switch self.layoutMode {
-            case .munual:
-                self.topConstraint = self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: frame.origin.y)
-                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: frame.origin.x)
-                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.size.width)
-                self.topConstraint?.isActive = true
-                self.leadingConstraint?.isActive = true
-                self.widthConstraint?.isActive = true
-            case .auto:
-                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
-                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
-                self.leadingConstraint?.isActive = true
-                self.trailingConstraint?.isActive = true
+            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+            self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+            self.leadingConstraint?.isActive = true
+            self.trailingConstraint?.isActive = true
+        }
+    }
+
+    public override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if #available(iOS 11.0, *) {
+            if let window = self.window {
+                let constraint: NSLayoutConstraint = self.stackView.bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1)
+                constraint.constant = -padding.bottom
+                constraint.priority = UILayoutPriority(rawValue: 750)
+                constraint.isActive = true
             }
         }
     }

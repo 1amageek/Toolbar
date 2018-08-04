@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InputViewController: UIViewController, UITextViewDelegate {
+class InputViewController: UITableViewController, UITextViewDelegate {
 
     let toolbar: Toolbar = Toolbar()
 
@@ -56,6 +56,8 @@ class InputViewController: UIViewController, UITextViewDelegate {
         self.item0 = ToolbarItem(customView: view)
         self.item1 = ToolbarItem(title: "Send", target: self, action: #selector(send))
         self.toolbar.setItems([self.menu, self.camera, self.picture, self.microphone, self.item0!, self.item1!], animated: false)
+
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
     }
 
     @objc func toggleMenu() {
@@ -99,5 +101,14 @@ class InputViewController: UIViewController, UITextViewDelegate {
         self.constraint = textView.heightAnchor.constraint(equalToConstant: size.height)
         self.constraint?.priority = UILayoutPriority.defaultHigh
         self.constraint?.isActive = true
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = UITableViewCell(style: .default, reuseIdentifier: "UITableViewCell")
+        return cell
     }
 }
