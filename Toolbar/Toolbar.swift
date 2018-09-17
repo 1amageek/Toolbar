@@ -33,6 +33,18 @@ public class Toolbar: UIView {
     public var minimumHeight: CGFloat = Toolbar.defaultHeight
 
     public var padding: UIEdgeInsets = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
+
+    public var isTranslucent: Bool = true {
+        didSet {
+            if isTranslucent {
+                self.backgroundView.isHidden = true
+                self.backgroundColor = .white
+            } else {
+                self.backgroundView.isHidden = false
+                self.backgroundColor = .clear
+            }
+        }
+    }
     
     private(set) var items: [ToolbarItem] = []
     

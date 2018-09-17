@@ -188,7 +188,7 @@ public class ToolbarItem: UIView {
         self.target = target as AnyObject
         self.action = action
         
-        let view: UIImageView = UIImageView(image: image.withRenderingMode(.alwaysTemplate))
+        let view: UIImageView = UIImageView(image: image)
         view.contentMode = .scaleAspectFill
         view.translatesAutoresizingMaskIntoConstraints = false
         
