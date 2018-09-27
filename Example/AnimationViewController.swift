@@ -19,11 +19,11 @@ class AnimationViewController: UIViewController {
         super.viewDidLoad()
 
         let button: UIButton = UIButton(type: .system)
-        button.setTitle("Animation Button", for: UIControlState.normal)
+        button.setTitle("Animation Button", for: UIControl.State.normal)
         self.view.addSubview(button)
         button.sizeToFit()
         button.center = self.view.center
-        button.addTarget(self, action: #selector(hide0), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(hide0), for: UIControl.Event.touchUpInside)
 
         let toolbar: Toolbar = Toolbar()
         self.view.addSubview(toolbar)

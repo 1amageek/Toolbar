@@ -16,7 +16,7 @@ public class Toolbar: UIView {
     
     public static let defaultHeight: CGFloat = 44
 
-    public var axis: UILayoutConstraintAxis = .horizontal {
+    public var axis: NSLayoutConstraint.Axis = .horizontal {
         didSet {
             stackView.axis = axis
             switch axis {
@@ -152,7 +152,7 @@ public class Toolbar: UIView {
         super.didMoveToWindow()
         if #available(iOS 11.0, *) {
             if let window = self.window {
-                let constraint: NSLayoutConstraint = self.stackView.bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1)
+                let constraint: NSLayoutConstraint = self.stackView.bottomAnchor.constraint(lessThanOrEqualToSystemSpacingBelow: window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1)
                 constraint.constant = -padding.bottom
                 constraint.priority = UILayoutPriority(rawValue: 750)
                 constraint.isActive = true
@@ -203,7 +203,7 @@ public class Toolbar: UIView {
     }()
     
     private(set) lazy var backgroundView: UIVisualEffectView = {
-        let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+        let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         let view: UIVisualEffectView = UIVisualEffectView(effect: blurEffect)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.frame = self.bounds
