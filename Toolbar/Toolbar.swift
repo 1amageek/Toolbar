@@ -82,6 +82,17 @@ public class Toolbar: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
+        if #available(iOS 13.0, *) {
+            let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemMaterial)
+            self.backgroundView = UIVisualEffectView(effect: blurEffect)
+        } else {
+            let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
+            self.backgroundView = UIVisualEffectView(effect: blurEffect)
+        }
+
+        self.backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundView.frame = self.bounds
+
         self.addSubview(self.backgroundView)
         self.addSubview(self.stackView)
         self.backgroundColor = .clear
@@ -202,11 +213,14 @@ public class Toolbar: UIView {
         return view
     }()
     
-    private(set) lazy var backgroundView: UIVisualEffectView = {
-        let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
-        let view: UIVisualEffectView = UIVisualEffectView(effect: blurEffect)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.frame = self.bounds
-        return view
-    }()
+    public var backgroundView: UIView! {
+        didSet {
+            oldValue.constraints.forEach { $0.isActive = false }
+            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+            backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
+            backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
+            backgroundView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
+            backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+        }
+    }
 }
