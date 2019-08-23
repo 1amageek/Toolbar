@@ -82,11 +82,11 @@ public class Toolbar: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
-        self.backgroundView = UIVisualEffectView(effect: blurEffect)
-
         if #available(iOS 13.0, *) {
             let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemMaterial)
+            self.backgroundView = UIVisualEffectView(effect: blurEffect)
+        } else {
+            let blurEffect: UIBlurEffect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
             self.backgroundView = UIVisualEffectView(effect: blurEffect)
         }
 
