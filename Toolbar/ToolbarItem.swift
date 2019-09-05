@@ -67,6 +67,9 @@ public class ToolbarItem: UIView {
     
     /// Content inset
     public var contentInset: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
+
+    /// Content size
+    public var contentSize: CGSize = .zero
     
     /// Fixed Space width
     public var width: CGFloat = 1 // Default 1
@@ -292,10 +295,12 @@ public class ToolbarItem: UIView {
             self.imageViewCenterYConstraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
             self.imageViewCenterXConstraint?.isActive = true
             self.imageViewCenterYConstraint?.isActive = true
-            self.imageViewWidthConstraint = view.widthAnchor.constraint(equalToConstant: view.bounds.width)
-            self.imageViewHeightConstraint = view.heightAnchor.constraint(equalToConstant: view.bounds.height)
-            self.imageViewWidthConstraint?.isActive = true
-            self.imageViewHeightConstraint?.isActive = true
+            if self.contentSize != .zero {
+                self.imageViewWidthConstraint = view.widthAnchor.constraint(equalToConstant: self.contentSize.width)
+                self.imageViewHeightConstraint = view.heightAnchor.constraint(equalToConstant: self.contentSize.height)
+                self.imageViewWidthConstraint?.isActive = true
+                self.imageViewHeightConstraint?.isActive = true
+            }
         }
         
         if let view: UIView = self.customView {
