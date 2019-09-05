@@ -126,13 +126,13 @@ public class ToolbarItem: UIView {
     
     // Private
     
-    private(set) var titleLabel: UILabel?
+    public private(set) var titleLabel: UILabel?
     
-    private(set) var imageView: UIImageView?
+    public private(set) var imageView: UIImageView?
     
-    private(set) var customView: UIView?
+    public private(set) var customView: UIView?
     
-    private(set) var spacing: Spacing = .none
+    public private(set) var spacing: Spacing = .none
     
     private var minimumWidthConstraint: NSLayoutConstraint?
     
