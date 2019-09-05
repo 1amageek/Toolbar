@@ -35,6 +35,7 @@ class AnimationViewController: UIViewController {
         }
         self.item0 = ToolbarItem(title: "Button", target: nil, action: nil)
         self.item1 = ToolbarItem(image: #imageLiteral(resourceName: "instagram"), target: nil, action: nil)
+        self.item1?.imageView?.frame = CGRect(x: 0, y: 0, width: 50, height: 100)
         toolbar.setItems([self.item0!, self.item1!], animated: false)
     }
 

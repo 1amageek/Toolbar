@@ -149,6 +149,10 @@ public class ToolbarItem: UIView {
     private var imageViewCenterXConstraint: NSLayoutConstraint?
     
     private var imageViewCenterYConstraint: NSLayoutConstraint?
+
+    private var imageViewWidthConstraint: NSLayoutConstraint?
+
+    private var imageViewHeightConstraint: NSLayoutConstraint?
     
     private var customViewLeadingConstraint: NSLayoutConstraint?
     
@@ -263,6 +267,8 @@ public class ToolbarItem: UIView {
                                 self.titleLabelCenterYConstraint,
                                 self.imageViewCenterXConstraint,
                                 self.imageViewCenterYConstraint,
+                                self.imageViewWidthConstraint,
+                                self.imageViewHeightConstraint,
                                 self.customViewLeadingConstraint,
                                 self.customViewTrailingConstraint,
                                 self.customViewTopConstraint,
@@ -286,6 +292,10 @@ public class ToolbarItem: UIView {
             self.imageViewCenterYConstraint = view.centerYAnchor.constraint(equalTo: self.centerYAnchor)
             self.imageViewCenterXConstraint?.isActive = true
             self.imageViewCenterYConstraint?.isActive = true
+            self.imageViewWidthConstraint = view.widthAnchor.constraint(equalToConstant: view.bounds.width)
+            self.imageViewHeightConstraint = view.heightAnchor.constraint(equalToConstant: view.bounds.height)
+            self.imageViewWidthConstraint?.isActive = true
+            self.imageViewHeightConstraint?.isActive = true
         }
         
         if let view: UIView = self.customView {
