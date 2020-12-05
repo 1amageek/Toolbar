@@ -20,8 +20,9 @@ public class Toolbar: UIView {
         didSet {
             stackView.axis = axis
             switch axis {
-            case .horizontal: layoutHorizontal()
-            case .vertical: layoutVertical()
+                case .horizontal: layoutHorizontal()
+                case .vertical: layoutVertical()
+                @unknown default: fatalError()
             }
             setNeedsLayout()
         }
@@ -74,7 +75,7 @@ public class Toolbar: UIView {
     
     /**
      Initialize in autolayout mode.
-    */
+     */
     public convenience init() {
         self.init(frame: .zero)
     }
@@ -139,23 +140,24 @@ public class Toolbar: UIView {
                                 self.topConstraint,
                                 self.bottomConstraint,
                                 self.widthConstraint
-            ].compactMap({ return $0 }))
+        ].compactMap({ return $0 }))
 
         switch axis {
-        case .horizontal:
-            self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
-            self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
-            self.minimumHeightConstraint?.isActive = true
-            self.maximumHeightConstraint?.isActive = true
-            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
-            self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
-            self.leadingConstraint?.isActive = true
-            self.trailingConstraint?.isActive = true
-        case .vertical:
-            self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
-            self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
-            self.leadingConstraint?.isActive = true
-            self.trailingConstraint?.isActive = true
+            case .horizontal:
+                self.minimumHeightConstraint = self.heightAnchor.constraint(greaterThanOrEqualToConstant: self.minimumHeight)
+                self.maximumHeightConstraint = self.heightAnchor.constraint(lessThanOrEqualToConstant: self.maximumHeight)
+                self.minimumHeightConstraint?.isActive = true
+                self.maximumHeightConstraint?.isActive = true
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+                self.leadingConstraint?.isActive = true
+                self.trailingConstraint?.isActive = true
+            case .vertical:
+                self.leadingConstraint = self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor)
+                self.trailingConstraint = self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor)
+                self.leadingConstraint?.isActive = true
+                self.trailingConstraint?.isActive = true
+            @unknown default: fatalError()
         }
     }
 
