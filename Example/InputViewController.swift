@@ -38,7 +38,7 @@ class InputViewController: UITableViewController, UITextViewDelegate {
 
     lazy var picture: ToolbarItem = {
         let item: ToolbarItem = ToolbarItem(image: #imageLiteral(resourceName: "picture"), target: nil, action: nil)
-        item.imageView?.frame = CGRect(x: 0, y: 0, width: 32, height: 32)
+        item.contentSize = CGSize(width: 32, height: 32)
         return item
     }()
 
