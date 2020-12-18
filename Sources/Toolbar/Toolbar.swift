@@ -6,7 +6,9 @@
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
+#if !os(macOS)
 import UIKit
+#endif
 
 public class Toolbar: UIView {
 
