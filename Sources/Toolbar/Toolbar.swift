@@ -49,7 +49,7 @@ public class Toolbar: UIView {
         }
     }
     
-    private(set) var items: [ToolbarItem] = []
+    private(set) var items: [Item] = []
     
     // MARK: - Constraint
     
@@ -78,8 +78,9 @@ public class Toolbar: UIView {
     /**
      Initialize in autolayout mode.
      */
-    public convenience init() {
+    public convenience init(_ items: [Item] = []) {
         self.init(frame: .zero)
+        self.setItems(items, animated: false)
     }
     
     public override init(frame: CGRect) {
@@ -181,7 +182,7 @@ public class Toolbar: UIView {
 
     // MARK: - 
     
-    public func setItems(_ items: [ToolbarItem], animated: Bool) {
+    public func setItems(_ items: [Item], animated: Bool) {
         self.stackView.arrangedSubviews.forEach { (view) in
             self.stackView.removeArrangedSubview(view)
             view.removeFromSuperview()
