@@ -80,9 +80,7 @@ public class ToolbarItem: UIView {
     public var height: CGFloat = 1
     
     /// The minimum height of the item
-    public var minimumHeight: CGFloat {
-        return Toolbar.defaultHeight - 12
-    }
+    public var minimumHeight: CGFloat = Toolbar.defaultHeight - 12
     
     /// The minimum width of the item
     public var minimumWidth: CGFloat {
