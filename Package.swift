@@ -1,22 +1,26 @@
-// swift-tools-version:5.3
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "Toolbar",
-    platforms: [.iOS(.v10)],
+    platforms: [
+        .macOS(.v26),
+        .iOS(.v26),
+    ],
     products: [
         .library(
             name: "Toolbar",
-            targets: ["Toolbar"]),
+            targets: ["Toolbar"]
+        ),
     ],
     targets: [
         .target(
-            name: "Toolbar",
-            dependencies: []),
+            name: "Toolbar"
+        ),
         .testTarget(
             name: "ToolbarTests",
-            dependencies: ["Toolbar"]),
-    ]
+            dependencies: ["Toolbar"]
+        ),
+    ],
+    swiftLanguageModes: [.v6]
 )
