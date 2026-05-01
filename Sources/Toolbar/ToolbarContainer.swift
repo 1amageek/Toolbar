@@ -164,10 +164,8 @@ private struct PreviewMessageBubble: View {
 }
 
 private let previewConversation: [PreviewMessage] = [
-    .init(role: .user, text: "Bob のチャット入力欄を Liquid Glass にしたい"),
-    .init(role: .assistant, text: "了解。新しい Toolbar パッケージを切ってそこで主要コンポーネント (editor / attachments / slash / voice / send) を分けて持つのが良さそう。"),
-    .init(role: .user, text: "API は宣言的にしたい。ToolbarContainer に何を入れるかは開発者が決める。"),
-    .init(role: .assistant, text: "それなら ToolbarContainer と各 primitive を public にして、中身は標準の HStack/VStack で自由に並べる形にすると拡張しやすいです。"),
+    .init(role: .user, text: "こんにちは"),
+    .init(role: .assistant, text: "こんにちは。今日はどんなことをお手伝いしましょうか？"),
 ]
 
 private struct ChatPreviewScaffold<Toolbar: View>: View {
