@@ -65,6 +65,7 @@ struct EditorBacking: NSViewRepresentable {
         }
         textView.rightInset = rightInset
         textView.updateTextContainerWidth()
+        textView.synchronizeFocus()
         context.coordinator.scheduleRecalcHeight()
     }
 
@@ -92,7 +93,7 @@ struct EditorBacking: NSViewRepresentable {
         }
 
         func scheduleRecalcHeight() {
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor [weak self] in
                 self?.recalcHeight()
             }
         }
@@ -127,14 +128,30 @@ final class BackingTextView: NSTextView {
     weak var coordinator: EditorBacking.Coordinator?
     var rightInset: CGFloat = 0
 
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        synchronizeFocus()
+    }
+
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         if result {
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor [weak self] in
                 self?.updateInsertionPointStateAndRestartTimer(true)
             }
         }
         return result
+    }
+
+    func synchronizeFocus() {
+        guard let coordinator else { return }
+        if coordinator.parent.isFocused {
+            guard let window, window.firstResponder !== self else { return }
+            window.makeFirstResponder(self)
+            updateInsertionPointStateAndRestartTimer(true)
+        } else if window?.firstResponder === self {
+            window?.makeFirstResponder(nil)
+        }
     }
 
     func updateTextContainerWidth() {

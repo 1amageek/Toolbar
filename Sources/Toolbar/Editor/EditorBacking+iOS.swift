@@ -37,6 +37,7 @@ struct EditorBacking: UIViewRepresentable {
         if textView.text != text {
             textView.text = text
         }
+        textView.synchronizeFocus()
         context.coordinator.scheduleRecalcHeight(textView)
     }
 
@@ -62,7 +63,7 @@ struct EditorBacking: UIViewRepresentable {
         }
 
         func scheduleRecalcHeight(_ textView: UITextView) {
-            DispatchQueue.main.async { [weak self, weak textView] in
+            Task { @MainActor [weak self, weak textView] in
                 guard let self, let textView else { return }
                 self.recalcHeight(textView)
             }
@@ -83,6 +84,21 @@ struct EditorBacking: UIViewRepresentable {
 final class BackingTextView: UITextView {
 
     weak var coordinator: EditorBacking.Coordinator?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        synchronizeFocus()
+    }
+
+    func synchronizeFocus() {
+        guard let coordinator else { return }
+        if coordinator.parent.isFocused {
+            guard !isFirstResponder, window != nil else { return }
+            becomeFirstResponder()
+        } else if isFirstResponder {
+            resignFirstResponder()
+        }
+    }
 
     override var keyCommands: [UIKeyCommand]? {
         [
