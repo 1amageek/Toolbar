@@ -59,6 +59,7 @@ public struct ToolbarEditor: View {
                     .allowsHitTesting(false)
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -75,6 +76,23 @@ public struct ToolbarEditor: View {
     .frame(minHeight: 36, maxHeight: max(36, min(height, 220)))
     .padding(12)
     .glassEffect(.regular, in: .rect(cornerRadius: 20))
+    .padding()
+}
+
+#Preview("ToolbarEditor — focused full width") {
+    @Previewable @State var text: String = ""
+    @Previewable @State var height: CGFloat = 36
+    @Previewable @State var focused: Bool = true
+
+    ToolbarEditor(
+        text: $text,
+        contentHeight: $height,
+        isFocused: $focused
+    )
+    .frame(minHeight: 36, maxHeight: max(36, min(height, 220)))
+    .padding(12)
+    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+    .frame(width: 360)
     .padding()
 }
 
