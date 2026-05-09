@@ -76,7 +76,7 @@ struct EditorBacking: NSViewRepresentable {
             }
             textView.scrollRangeToVisible(textView.selectedRange())
             if textView.window?.firstResponder === textView {
-                textView.updateInsertionPointStateAndRestartTimer(true)
+                textView.refreshInsertionPoint()
             }
             context.coordinator.appliedText = text
         }
@@ -158,7 +158,7 @@ final class BackingTextView: NSTextView {
         if result {
             coordinator?.parent.isFocused = true
             Task { @MainActor [weak self] in
-                self?.updateInsertionPointStateAndRestartTimer(true)
+                self?.refreshInsertionPoint()
             }
         }
         return result
@@ -175,12 +175,36 @@ final class BackingTextView: NSTextView {
     func synchronizeFocus() {
         guard let coordinator else { return }
         if coordinator.parent.isFocused {
-            guard let window, window.firstResponder !== self else { return }
-            window.makeFirstResponder(self)
-            updateInsertionPointStateAndRestartTimer(true)
+            guard let window else { return }
+            if window.firstResponder !== self {
+                window.makeFirstResponder(self)
+            }
+            refreshInsertionPoint()
+            Task { @MainActor [weak self] in
+                self?.refreshInsertionPoint()
+            }
         } else if window?.firstResponder === self {
             window?.makeFirstResponder(nil)
         }
+    }
+
+    func refreshInsertionPoint() {
+        guard window?.firstResponder === self else { return }
+        let textLength = (string as NSString).length
+        let selectedRange = selectedRange()
+        let visibleRange: NSRange
+        if selectedRange.location + selectedRange.length > textLength {
+            visibleRange = NSRange(location: textLength, length: 0)
+            setSelectedRange(visibleRange)
+        } else {
+            visibleRange = selectedRange
+        }
+        if let layoutManager, let textContainer {
+            layoutManager.ensureLayout(for: textContainer)
+        }
+        scrollRangeToVisible(visibleRange)
+        updateInsertionPointStateAndRestartTimer(true)
+        needsDisplay = true
     }
 
     func updateTextContainerWidth() {
@@ -188,12 +212,14 @@ final class BackingTextView: NSTextView {
         let availableWidth = bounds.width - rightInset
         if availableWidth > 0, abs(textContainer.size.width - availableWidth) > 1 {
             textContainer.size.width = availableWidth
+            refreshInsertionPoint()
         }
     }
 
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         updateTextContainerWidth()
+        refreshInsertionPoint()
     }
 
     override func keyDown(with event: NSEvent) {
