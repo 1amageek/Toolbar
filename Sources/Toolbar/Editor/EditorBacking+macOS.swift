@@ -91,6 +91,9 @@ struct EditorBacking: NSViewRepresentable {
         var parent: EditorBacking
         var appliedText: String?
         weak var textView: BackingTextView?
+        private var pendingFocusUpdate: Bool?
+        private var focusUpdateTask: Task<Void, Never>?
+        private var heightUpdateTask: Task<Void, Never>?
 
         init(_ parent: EditorBacking) {
             self.parent = parent
@@ -98,11 +101,11 @@ struct EditorBacking: NSViewRepresentable {
         }
 
         func textDidBeginEditing(_ notification: Notification) {
-            parent.isFocused = true
+            setFocusFromAppKit(true)
         }
 
         func textDidEndEditing(_ notification: Notification) {
-            parent.isFocused = false
+            setFocusFromAppKit(false)
         }
 
         func textDidChange(_ notification: Notification) {
@@ -113,8 +116,25 @@ struct EditorBacking: NSViewRepresentable {
         }
 
         func scheduleRecalcHeight() {
-            Task { @MainActor [weak self] in
+            heightUpdateTask?.cancel()
+            heightUpdateTask = Task { @MainActor [weak self] in
+                await Task.yield()
+                guard !Task.isCancelled else { return }
                 self?.recalcHeight()
+            }
+        }
+
+        func setFocusFromAppKit(_ isFocused: Bool) {
+            guard parent.isFocused != isFocused else { return }
+            pendingFocusUpdate = isFocused
+            focusUpdateTask?.cancel()
+            focusUpdateTask = Task { @MainActor [weak self] in
+                await Task.yield()
+                guard let self, !Task.isCancelled else { return }
+                let nextValue = self.pendingFocusUpdate ?? isFocused
+                self.pendingFocusUpdate = nil
+                guard self.parent.isFocused != nextValue else { return }
+                self.parent.isFocused = nextValue
             }
         }
 
@@ -156,7 +176,7 @@ final class BackingTextView: NSTextView {
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         if result {
-            coordinator?.parent.isFocused = true
+            coordinator?.setFocusFromAppKit(true)
             Task { @MainActor [weak self] in
                 self?.refreshInsertionPoint()
             }
@@ -167,7 +187,7 @@ final class BackingTextView: NSTextView {
     override func resignFirstResponder() -> Bool {
         let result = super.resignFirstResponder()
         if result {
-            coordinator?.parent.isFocused = false
+            coordinator?.setFocusFromAppKit(false)
         }
         return result
     }

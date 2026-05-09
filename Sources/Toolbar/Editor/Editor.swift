@@ -50,8 +50,8 @@ public struct ToolbarEditor: View {
             onKeyEvent: onKeyEvent,
             onPasteAttachment: onPasteAttachment
         )
-        .overlay(alignment: .topLeading) {
-            if text.isEmpty && !isFocused {
+        .background(alignment: .topLeading) {
+            if text.isEmpty {
                 Text(placeholder)
                     .foregroundStyle(.placeholder)
                     .padding(.leading, 4)
