@@ -74,11 +74,13 @@ struct ChatView: View {
 }
 ```
 
-`ToolbarContainer` paints **one** continuous Liquid Glass slab and wraps its children in a `GlassEffectContainer`, so glass-circle buttons and the slash popup morph cohesively with the slab. Embed it via `.safeAreaInset(edge: .bottom)` on the message scroll view — never directly inside a `VStack`.
+`ToolbarContainer` paints **one** continuous Liquid Glass slab and wraps slab-local children in a `GlassEffectContainer`, so glass-circle buttons and attachment chips morph cohesively with the slab. Floating surfaces such as slash command suggestions belong in `.popup { }`, outside the slab. Embed the toolbar via `.safeAreaInset(edge: .bottom)` on the message scroll view — never directly inside a `VStack`.
+
+Use `ToolbarContainer(contentInsets:)` for padding inside the glass slab. Use regular `.padding(...)` outside the container for spacing around the whole toolbar.
 
 ## Voice + accessory area
 
-`.accessory { }` inserts a view above the composer content within the same slab. Use it for ephemeral state strips: live waveforms during recording, "transcribing…" indicators, error banners, draft previews, suggestion chips, upload progress.
+`.accessory { }` inserts a view above the composer content within the same slab. Use it for ephemeral state strips: attachment chips, live waveforms during recording, "transcribing…" indicators, error banners, draft previews, suggestion chips, upload progress.
 
 ```swift
 @State private var voiceState: VoiceState = .idle
@@ -124,21 +126,20 @@ The `.transcribing` state exists so the accessory **stays visible** between `sto
 
 ## Slash commands
 
-Slash popup goes **inside** the container, so it shares the morph domain with the slab:
+Slash popup goes in `.popup(isPresented:)`, outside the toolbar slab. Present it only while the editor text is in slash-command mode:
 
 ```swift
 ToolbarContainer {
-    if !matches.isEmpty {
-        SlashCommandPopup(
-            commands: matches,
-            selectedIndex: selectedIndex,
-            onSelect: commit
-        )
-    }
-
     HStack(alignment: .bottom, spacing: 8) {
         // ... editor with $text driving `matches` via SlashCommandProvider ...
     }
+}
+.popup(isPresented: text.hasPrefix("/")) {
+    SlashCommandPopup(
+        commands: matches,
+        selectedIndex: selectedIndex,
+        onSelect: commit
+    )
 }
 ```
 
@@ -146,15 +147,22 @@ Implement `SlashCommandProvider` against your own command source, or use the bun
 
 ## Attachments
 
-Three URL-backed concrete types (`FileAttachment`, `ImageAttachment`, `PathAttachment`) all conform to the `ToolbarAttachment` protocol. Render them as glass capsules with `AttachmentChip`:
+Three URL-backed concrete types (`FileAttachment`, `ImageAttachment`, `PathAttachment`) all conform to the `ToolbarAttachment` protocol. Render them as glass capsules with `AttachmentChip` in the accessory area above the editor row:
 
 ```swift
-if !attachments.isEmpty {
-    ScrollView(.horizontal, showsIndicators: false) {
-        HStack(spacing: 6) {
-            ForEach(attachments, id: \.id) { attachment in
-                AttachmentChip(attachment: attachment) {
-                    remove(attachment)
+ToolbarContainer {
+    HStack(alignment: .bottom, spacing: 8) {
+        // ... menu, editor, trailing action ...
+    }
+}
+.accessory {
+    if !attachments.isEmpty {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(attachments, id: \.id) { attachment in
+                    AttachmentChip(attachment: attachment) {
+                        remove(attachment)
+                    }
                 }
             }
         }
@@ -169,6 +177,7 @@ For inline `[[marker]]` attachments rendered directly inside the editor text, co
 | Component | Role |
 |---|---|
 | `ToolbarContainer` | Liquid Glass slab + `GlassEffectContainer` morph domain |
+| `.popup { }` | Modifier inserting a floating surface above the slab |
 | `.accessory { }` | Modifier inserting an ephemeral strip above the content |
 | `ToolbarEditor` | Cross-platform multi-line editor (`NSTextView` / `UITextView` backed) |
 | `ToolbarMenuButton` | Glass-circle menu styled to match other buttons |

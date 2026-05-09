@@ -36,6 +36,7 @@ struct EditorBacking: NSViewRepresentable {
         textView.allowsUndo = true
         textView.font = .systemFont(ofSize: NSFont.systemFontSize)
         textView.textColor = .labelColor
+        textView.insertionPointColor = .labelColor
         textView.backgroundColor = .clear
         textView.drawsBackground = false
         textView.isVerticallyResizable = true
@@ -60,8 +61,24 @@ struct EditorBacking: NSViewRepresentable {
     func updateNSView(_ scrollView: NSScrollView, context: Context) {
         guard let textView = scrollView.documentView as? BackingTextView else { return }
         context.coordinator.parent = self
-        if textView.string != text {
+        if text != context.coordinator.appliedText {
+            let oldLength = (textView.string as NSString).length
+            let newLength = (text as NSString).length
+            let selectedRange = textView.selectedRange()
             textView.string = text
+            if selectedRange.location == oldLength {
+                textView.setSelectedRange(NSRange(location: newLength, length: 0))
+            } else {
+                textView.setSelectedRange(NSRange(
+                    location: min(selectedRange.location, newLength),
+                    length: 0
+                ))
+            }
+            textView.scrollRangeToVisible(textView.selectedRange())
+            if textView.window?.firstResponder === textView {
+                textView.updateInsertionPointStateAndRestartTimer(true)
+            }
+            context.coordinator.appliedText = text
         }
         textView.rightInset = rightInset
         textView.updateTextContainerWidth()
@@ -72,10 +89,12 @@ struct EditorBacking: NSViewRepresentable {
     @MainActor
     final class Coordinator: NSObject, NSTextViewDelegate {
         var parent: EditorBacking
+        var appliedText: String?
         weak var textView: BackingTextView?
 
         init(_ parent: EditorBacking) {
             self.parent = parent
+            self.appliedText = nil
         }
 
         func textDidBeginEditing(_ notification: Notification) {
@@ -88,6 +107,7 @@ struct EditorBacking: NSViewRepresentable {
 
         func textDidChange(_ notification: Notification) {
             guard let textView else { return }
+            appliedText = textView.string
             parent.text = textView.string
             recalcHeight()
         }
@@ -136,9 +156,18 @@ final class BackingTextView: NSTextView {
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         if result {
+            coordinator?.parent.isFocused = true
             Task { @MainActor [weak self] in
                 self?.updateInsertionPointStateAndRestartTimer(true)
             }
+        }
+        return result
+    }
+
+    override func resignFirstResponder() -> Bool {
+        let result = super.resignFirstResponder()
+        if result {
+            coordinator?.parent.isFocused = false
         }
         return result
     }

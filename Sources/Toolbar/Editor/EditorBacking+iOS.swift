@@ -22,6 +22,7 @@ struct EditorBacking: UIViewRepresentable {
         textView.coordinator = context.coordinator
         textView.font = .preferredFont(forTextStyle: .body)
         textView.textColor = .label
+        textView.tintColor = .label
         textView.backgroundColor = .clear
         textView.isScrollEnabled = true
         textView.isEditable = true
@@ -34,8 +35,21 @@ struct EditorBacking: UIViewRepresentable {
 
     func updateUIView(_ textView: BackingTextView, context: Context) {
         context.coordinator.parent = self
-        if textView.text != text {
+        if text != context.coordinator.appliedText {
+            let oldLength = (textView.text as NSString).length
+            let newLength = (text as NSString).length
+            let selectedRange = textView.selectedRange
             textView.text = text
+            if selectedRange.location == oldLength {
+                textView.selectedRange = NSRange(location: newLength, length: 0)
+            } else {
+                textView.selectedRange = NSRange(
+                    location: min(selectedRange.location, newLength),
+                    length: 0
+                )
+            }
+            textView.scrollRangeToVisible(textView.selectedRange)
+            context.coordinator.appliedText = text
         }
         textView.synchronizeFocus()
         context.coordinator.scheduleRecalcHeight(textView)
@@ -44,9 +58,11 @@ struct EditorBacking: UIViewRepresentable {
     @MainActor
     final class Coordinator: NSObject, UITextViewDelegate {
         var parent: EditorBacking
+        var appliedText: String?
 
         init(_ parent: EditorBacking) {
             self.parent = parent
+            self.appliedText = nil
         }
 
         func textViewDidBeginEditing(_ textView: UITextView) {
@@ -58,7 +74,9 @@ struct EditorBacking: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
-            parent.text = textView.text ?? ""
+            let newText = textView.text ?? ""
+            appliedText = newText
+            parent.text = newText
             scheduleRecalcHeight(textView)
         }
 
@@ -84,6 +102,22 @@ struct EditorBacking: UIViewRepresentable {
 final class BackingTextView: UITextView {
 
     weak var coordinator: EditorBacking.Coordinator?
+
+    override func becomeFirstResponder() -> Bool {
+        let result = super.becomeFirstResponder()
+        if result {
+            coordinator?.parent.isFocused = true
+        }
+        return result
+    }
+
+    override func resignFirstResponder() -> Bool {
+        let result = super.resignFirstResponder()
+        if result {
+            coordinator?.parent.isFocused = false
+        }
+        return result
+    }
 
     override func didMoveToWindow() {
         super.didMoveToWindow()

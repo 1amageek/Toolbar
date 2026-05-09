@@ -4,8 +4,8 @@ import SwiftUI
 ///
 /// `ToolbarContainer` paints **one** continuous Liquid Glass slab as its
 /// background and wraps its children in a `GlassEffectContainer` so that any
-/// child glass surfaces (`SlashCommandPopup`, `AttachmentChip`, glass-circle
-/// buttons) morph together inside the same domain.
+/// child glass surfaces (`AttachmentChip`, glass-circle buttons) morph
+/// together inside the same domain.
 ///
 /// The container has two stacked regions:
 ///
@@ -14,8 +14,9 @@ import SwiftUI
 ///   ``VoiceWaveform`` while recording, a ``TranscribingIndicator`` after
 ///   stopping, an error banner, a draft preview, or inline suggestions.
 ///   Set it via the ``accessory(_:)`` modifier; defaults to nothing.
-/// - **content** — the developer-supplied composer body (action row,
-///   attachment chips, slash popup, etc.).
+/// - **content** — the developer-supplied composer body (action row, etc.).
+///   Floating surfaces such as ``SlashCommandPopup`` belong in ``popup(_:)``
+///   so they render outside the slab.
 ///
 /// Layering:
 ///
@@ -34,9 +35,6 @@ import SwiftUI
 ///
 /// ```swift
 /// ToolbarContainer {
-///     if !matches.isEmpty {
-///         SlashCommandPopup(commands: matches, selectedIndex: idx, onSelect: select)
-///     }
 ///     HStack(alignment: .bottom, spacing: 8) {
 ///         ToolbarMenuButton { ... } label: { ... }
 ///         ToolbarEditor(text: $text, ...)
@@ -50,6 +48,9 @@ import SwiftUI
 ///     case .idle:         EmptyView()
 ///     }
 /// }
+/// .popup(isPresented: text.hasPrefix("/")) {
+///     SlashCommandPopup(commands: matches, selectedIndex: idx, onSelect: select)
+/// }
 /// ```
 ///
 /// Embed in chat views via `.safeAreaInset(edge: .bottom)`.
@@ -57,36 +58,38 @@ public struct ToolbarContainer<Accessory: View, Content: View>: View {
 
     private let accessory: Accessory
     private let spacing: CGFloat
+    private let contentInsets: EdgeInsets
     private let content: Content
 
     public init(
         spacing: CGFloat = 8,
+        contentInsets: EdgeInsets = EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
         @ViewBuilder content: () -> Content
     ) where Accessory == EmptyView {
         self.accessory = EmptyView()
         self.spacing = spacing
+        self.contentInsets = contentInsets
         self.content = content()
     }
 
     fileprivate init(
         accessory: Accessory,
         spacing: CGFloat,
+        contentInsets: EdgeInsets,
         content: Content
     ) {
         self.accessory = accessory
         self.spacing = spacing
+        self.contentInsets = contentInsets
         self.content = content
     }
 
     public var body: some View {
         GlassEffectContainer {
             slabContent
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
+                .padding(contentInsets)
                 .glassEffect(.regular, in: .rect(cornerRadius: 28))
         }
-        .padding(.horizontal, 12)
-        .padding(.bottom, 8)
     }
 
     @ViewBuilder
@@ -103,6 +106,23 @@ public struct ToolbarContainer<Accessory: View, Content: View>: View {
 }
 
 extension ToolbarContainer {
+
+    /// Inserts a floating view above the toolbar slab.
+    ///
+    /// Use this for popup surfaces that should not consume space inside the
+    /// composer slab, such as slash-command completion lists. The popup is
+    /// intentionally outside the container's glass morph domain.
+    public func popup<P: View>(
+        isPresented: Bool = true,
+        @ViewBuilder _ build: () -> P
+    ) -> ToolbarPopupContainer<P, Self> {
+        ToolbarPopupContainer(
+            isPresented: isPresented,
+            popup: build(),
+            spacing: spacing,
+            toolbar: self
+        )
+    }
 
     /// Inserts a view above the composer content within the same Liquid Glass
     /// slab. Replaces the current accessory.
@@ -121,8 +141,40 @@ extension ToolbarContainer {
         ToolbarContainer<A, Content>(
             accessory: build(),
             spacing: spacing,
+            contentInsets: contentInsets,
             content: content
         )
+    }
+}
+
+public struct ToolbarPopupContainer<Popup: View, Toolbar: View>: View {
+
+    private let isPresented: Bool
+    private let popup: Popup
+    private let spacing: CGFloat
+    private let toolbar: Toolbar
+
+    fileprivate init(
+        isPresented: Bool,
+        popup: Popup,
+        spacing: CGFloat,
+        toolbar: Toolbar
+    ) {
+        self.isPresented = isPresented
+        self.popup = popup
+        self.spacing = spacing
+        self.toolbar = toolbar
+    }
+
+    public var body: some View {
+        if isPresented {
+            VStack(alignment: .leading, spacing: spacing) {
+                popup
+                toolbar
+            }
+        } else {
+            toolbar
+        }
     }
 }
 
@@ -333,6 +385,8 @@ private func VoiceAccessory(
             VoiceAccessory(state: voiceState, amplitudes: amplitudes)
         }
         .voiceAmplitudes(from: source, into: $amplitudes)
+        .padding(.horizontal, 12)
+        .padding(.bottom, 8)
     }
 }
 
@@ -346,18 +400,6 @@ private func VoiceAccessory(
 
     ChatPreviewScaffold {
         ToolbarContainer {
-            if !attachments.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(attachments) { attachment in
-                            AttachmentChip(attachment: attachment) {
-                                attachments.removeAll { $0.id == attachment.id }
-                            }
-                        }
-                    }
-                }
-            }
-
             HStack(alignment: .bottom, spacing: 8) {
                 ToolbarMenuButton {
                     Button("File",        systemImage: "doc")              {}
@@ -379,6 +421,21 @@ private func VoiceAccessory(
                 )
             }
         }
+        .accessory {
+            if !attachments.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(attachments) { attachment in
+                            AttachmentChip(attachment: attachment) {
+                                attachments.removeAll { $0.id == attachment.id }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.bottom, 8)
     }
 }
 
@@ -395,12 +452,6 @@ private func VoiceAccessory(
 
     ChatPreviewScaffold {
         ToolbarContainer {
-            SlashCommandPopup(
-                commands: commands,
-                selectedIndex: selected,
-                onSelect: { _ in }
-            )
-
             HStack(alignment: .bottom, spacing: 8) {
                 ToolbarMenuButton {
                     Button("File",        systemImage: "doc")              {}
@@ -422,6 +473,16 @@ private func VoiceAccessory(
                 )
             }
         }
+        .popup(isPresented: text.hasPrefix("/")) {
+            SlashCommandPopup(
+                commands: commands,
+                selectedIndex: selected,
+                onSelect: { _ in }
+            )
+            .frame(maxHeight: 120)
+        }
+        .padding(.horizontal, 12)
+        .padding(.bottom, 8)
     }
 }
 

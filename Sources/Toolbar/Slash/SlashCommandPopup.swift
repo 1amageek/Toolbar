@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Popup listing filtered ``SlashCommand``s above the editor.
 ///
-/// Adopters typically place this as the first child of a ``ToolbarContainer``,
-/// driven by their own state (filtered commands and the selected index).
+/// Adopters typically place this in ``ToolbarContainer/popup(_:)``, driven by
+/// their own state (filtered commands and the selected index).
 public struct SlashCommandPopup: View {
 
     private let commands: [SlashCommand]
@@ -37,8 +37,6 @@ public struct SlashCommandPopup: View {
                     }
                     .padding(.vertical, 4)
                 }
-                .frame(maxWidth: 320)
-                .frame(maxHeight: 210)
                 .glassEffect(.regular, in: .rect(cornerRadius: 12))
                 .onChange(of: selectedIndex) { _, newValue in
                     guard let idx = newValue else { return }
