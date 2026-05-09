@@ -8,6 +8,7 @@ struct EditorBacking: NSViewRepresentable {
     @Binding var text: String
     @Binding var contentHeight: CGFloat
     @Binding var isFocused: Bool
+    @Binding var hasMarkedText: Bool
     var rightInset: CGFloat
     var onCommandReturn: () -> Void
     var onKeyEvent: (EditorKey) -> Bool
@@ -98,7 +99,9 @@ struct EditorBacking: NSViewRepresentable {
         var appliedText: String?
         weak var textView: BackingTextView?
         private var pendingFocusUpdate: Bool?
+        private var pendingMarkedTextUpdate: Bool?
         private var focusUpdateTask: Task<Void, Never>?
+        private var markedTextUpdateTask: Task<Void, Never>?
         private var focusSyncTask: Task<Void, Never>?
         private var heightUpdateTask: Task<Void, Never>?
 
@@ -113,12 +116,14 @@ struct EditorBacking: NSViewRepresentable {
 
         func textDidEndEditing(_ notification: Notification) {
             setFocusFromAppKit(false)
+            setMarkedTextFromAppKit(false)
         }
 
         func textDidChange(_ notification: Notification) {
             guard let textView else { return }
             appliedText = textView.string
             parent.text = textView.string
+            setMarkedTextFromAppKit(textView.hasMarkedText())
             recalcHeight()
         }
 
@@ -151,6 +156,25 @@ struct EditorBacking: NSViewRepresentable {
                 self.pendingFocusUpdate = nil
                 guard self.parent.isFocused != nextValue else { return }
                 self.parent.isFocused = nextValue
+            }
+        }
+
+        func syncMarkedTextFromAppKit() {
+            guard let textView else { return }
+            setMarkedTextFromAppKit(textView.hasMarkedText())
+        }
+
+        func setMarkedTextFromAppKit(_ hasMarkedText: Bool) {
+            guard parent.hasMarkedText != hasMarkedText else { return }
+            pendingMarkedTextUpdate = hasMarkedText
+            markedTextUpdateTask?.cancel()
+            markedTextUpdateTask = Task { @MainActor [weak self] in
+                await Task.yield()
+                guard let self, !Task.isCancelled else { return }
+                let nextValue = self.pendingMarkedTextUpdate ?? hasMarkedText
+                self.pendingMarkedTextUpdate = nil
+                guard self.parent.hasMarkedText != nextValue else { return }
+                self.parent.hasMarkedText = nextValue
             }
         }
 
@@ -274,11 +298,22 @@ final class BackingTextView: NSTextView {
             }
         }
         super.keyDown(with: event)
+        coordinator?.syncMarkedTextFromAppKit()
     }
 
     override func insertTab(_ sender: Any?) {
         if coordinator?.parent.onKeyEvent(.tab) == true { return }
         super.insertTab(sender)
+    }
+
+    override func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {
+        super.setMarkedText(string, selectedRange: selectedRange, replacementRange: replacementRange)
+        coordinator?.setMarkedTextFromAppKit(hasMarkedText())
+    }
+
+    override func unmarkText() {
+        super.unmarkText()
+        coordinator?.setMarkedTextFromAppKit(hasMarkedText())
     }
 
     // MARK: - Drag & drop

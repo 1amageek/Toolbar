@@ -7,6 +7,7 @@ struct EditorBacking: UIViewRepresentable {
     @Binding var text: String
     @Binding var contentHeight: CGFloat
     @Binding var isFocused: Bool
+    @Binding var hasMarkedText: Bool
     var rightInset: CGFloat
     var onCommandReturn: () -> Void
     var onKeyEvent: (EditorKey) -> Bool
@@ -59,6 +60,8 @@ struct EditorBacking: UIViewRepresentable {
     final class Coordinator: NSObject, UITextViewDelegate {
         var parent: EditorBacking
         var appliedText: String?
+        private var pendingMarkedTextUpdate: Bool?
+        private var markedTextUpdateTask: Task<Void, Never>?
 
         init(_ parent: EditorBacking) {
             self.parent = parent
@@ -71,13 +74,33 @@ struct EditorBacking: UIViewRepresentable {
 
         func textViewDidEndEditing(_ textView: UITextView) {
             parent.isFocused = false
+            setMarkedTextFromUIKit(false)
         }
 
         func textViewDidChange(_ textView: UITextView) {
             let newText = textView.text ?? ""
             appliedText = newText
             parent.text = newText
+            setMarkedTextFromUIKit(textView.markedTextRange != nil)
             scheduleRecalcHeight(textView)
+        }
+
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            setMarkedTextFromUIKit(textView.markedTextRange != nil)
+        }
+
+        func setMarkedTextFromUIKit(_ hasMarkedText: Bool) {
+            guard parent.hasMarkedText != hasMarkedText else { return }
+            pendingMarkedTextUpdate = hasMarkedText
+            markedTextUpdateTask?.cancel()
+            markedTextUpdateTask = Task { @MainActor [weak self] in
+                await Task.yield()
+                guard let self, !Task.isCancelled else { return }
+                let nextValue = self.pendingMarkedTextUpdate ?? hasMarkedText
+                self.pendingMarkedTextUpdate = nil
+                guard self.parent.hasMarkedText != nextValue else { return }
+                self.parent.hasMarkedText = nextValue
+            }
         }
 
         func scheduleRecalcHeight(_ textView: UITextView) {

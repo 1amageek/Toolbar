@@ -13,6 +13,7 @@ public struct ToolbarEditor: View {
     @Binding private var text: String
     @Binding private var contentHeight: CGFloat
     @Binding private var isFocused: Bool
+    @State private var hasMarkedText = false
 
     private let placeholder: String
     private let rightInset: CGFloat
@@ -45,13 +46,14 @@ public struct ToolbarEditor: View {
             text: $text,
             contentHeight: $contentHeight,
             isFocused: $isFocused,
+            hasMarkedText: $hasMarkedText,
             rightInset: rightInset,
             onCommandReturn: onCommandReturn,
             onKeyEvent: onKeyEvent,
             onPasteAttachment: onPasteAttachment
         )
         .background(alignment: .topLeading) {
-            if text.isEmpty {
+            if text.isEmpty && !hasMarkedText {
                 Text(placeholder)
                     .foregroundStyle(.placeholder)
                     .padding(.leading, 4)
