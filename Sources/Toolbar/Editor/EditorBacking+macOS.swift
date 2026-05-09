@@ -33,6 +33,8 @@ struct EditorBacking: NSViewRepresentable {
         textView.delegate = context.coordinator
         textView.coordinator = context.coordinator
         textView.isRichText = false
+        textView.isEditable = true
+        textView.isSelectable = true
         textView.allowsUndo = true
         textView.font = .systemFont(ofSize: NSFont.systemFontSize)
         textView.textColor = .labelColor
@@ -46,6 +48,10 @@ struct EditorBacking: NSViewRepresentable {
         textView.textContainer?.lineFragmentPadding = 4
         textView.rightInset = rightInset
         textView.textContainer?.widthTracksTextView = true
+        textView.textContainer?.containerSize = NSSize(
+            width: scrollView.contentSize.width,
+            height: .greatestFiniteMagnitude
+        )
 
         textView.registerForDraggedTypes([
             .fileURL,
@@ -82,7 +88,7 @@ struct EditorBacking: NSViewRepresentable {
         }
         textView.rightInset = rightInset
         textView.updateTextContainerWidth()
-        textView.synchronizeFocus()
+        context.coordinator.scheduleFocusSync()
         context.coordinator.scheduleRecalcHeight()
     }
 
@@ -93,6 +99,7 @@ struct EditorBacking: NSViewRepresentable {
         weak var textView: BackingTextView?
         private var pendingFocusUpdate: Bool?
         private var focusUpdateTask: Task<Void, Never>?
+        private var focusSyncTask: Task<Void, Never>?
         private var heightUpdateTask: Task<Void, Never>?
 
         init(_ parent: EditorBacking) {
@@ -121,6 +128,15 @@ struct EditorBacking: NSViewRepresentable {
                 await Task.yield()
                 guard !Task.isCancelled else { return }
                 self?.recalcHeight()
+            }
+        }
+
+        func scheduleFocusSync() {
+            focusSyncTask?.cancel()
+            focusSyncTask = Task { @MainActor [weak self] in
+                await Task.yield()
+                guard let self, !Task.isCancelled else { return }
+                self.textView?.synchronizeFocus()
             }
         }
 
@@ -170,16 +186,14 @@ final class BackingTextView: NSTextView {
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        synchronizeFocus()
+        coordinator?.scheduleFocusSync()
     }
 
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         if result {
             coordinator?.setFocusFromAppKit(true)
-            Task { @MainActor [weak self] in
-                self?.refreshInsertionPoint()
-            }
+            scheduleInsertionPointRefresh()
         }
         return result
     }
@@ -200,11 +214,16 @@ final class BackingTextView: NSTextView {
                 window.makeFirstResponder(self)
             }
             refreshInsertionPoint()
-            Task { @MainActor [weak self] in
-                self?.refreshInsertionPoint()
-            }
+            scheduleInsertionPointRefresh()
         } else if window?.firstResponder === self {
             window?.makeFirstResponder(nil)
+        }
+    }
+
+    func scheduleInsertionPointRefresh() {
+        Task { @MainActor [weak self] in
+            await Task.yield()
+            self?.refreshInsertionPoint()
         }
     }
 
@@ -224,7 +243,7 @@ final class BackingTextView: NSTextView {
         }
         scrollRangeToVisible(visibleRange)
         updateInsertionPointStateAndRestartTimer(true)
-        needsDisplay = true
+        setNeedsDisplay(bounds)
     }
 
     func updateTextContainerWidth() {
